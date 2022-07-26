@@ -1,0 +1,33 @@
+//Disposition Flexbox
+@mixin row($justify: center, $align: center) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+@mixin column($justify: center, $align: center) {
+  display: flex;
+  flex-direction: column;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+//MediaQueries map-breakpoints
+$breakpoints: (
+  tablet-min: 768px,
+  tablet-max: 991px,
+  desktop: 992px
+);
+
+//MediaQueries
+@mixin tablet {
+  @media all and (min-width: map-get($breakpoints, tablet-min)) and (max-width: map-get($breakpoints, tablet-max)) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media all and (min-width: map-get($breakpoints, desktop)) {
+    @content;
+  }
+}
