@@ -1,13 +1,15 @@
 import { createStore } from 'vuex'
 
+
+
 const axios = require('axios')
 const instance = axios.create({
   baseURL: 'http://localhost:3000/api'
 })
 
-let unlogUser = {
+const unlogUser = {
   userId: '',
-  token: ''
+  token: '',
 }
 
 let user = localStorage.getItem('user')
@@ -22,8 +24,17 @@ if (!user) {
 export default createStore({
   state: {
     status: '',
-    user: user,
-    posts: []
+    user: {
+      userId: '',
+      token: '',
+      email: '',
+      alias: '',
+    },
+    newPost: {
+      text: '',
+      image: '',
+    },
+    posts: [],
   },
   getters: {
   },
@@ -31,16 +42,38 @@ export default createStore({
     setStatus(state, status) {
       state.status = status
     },
+    registerEmail(state, email) {
+      state.user.email = email
+    },
     log(state, user) {
       state.user = user
-      localStorage.setItem('user', JSON.stringify(user))
+      instance.defaults.headers.common['Authorization'] = `Bearer ${user.token}`
+      localStorage.setItem('user', JSON.stringify({user: user.userId, token: user.token}))
     },
     unlog(state) {
-      state.user = unlogUser
       localStorage.removeItem('user')
+      state.user = {
+        userId: '',
+        token: '',
+        email: '',
+        alias: ''
+      }
     },
     posts(state, dataArray) {
       state.posts = dataArray
+    },
+    fillNewPost(state, newPost) {
+      if (newPost.image == '') {
+        state.newPost = {
+          text: newPost.text,
+          image: ''
+        }
+      } else {
+        state.newPost = {
+          text: newPost.text,
+          image: newPost.image
+        }
+      }
     }
   },
   actions: {
@@ -64,6 +97,7 @@ export default createStore({
           .then((response) => {
             commit('setStatus', 'logedIn')
             commit('log', response.data)
+            commit('registerEmail', userLogInfos.email)
             resolve(response)
           })
           .catch((error) => {
@@ -87,22 +121,30 @@ export default createStore({
       })
     },
     createPost: ({commit}, postInfos) => {
-      commit
-      return new Promise((resolve, reject) => {
-        instance.post('/post', postInfos)
-          .then((response) => {
-            //getPosts()
-            resolve(response)
-          })
-          .catch((error) => reject(error))
-      })
+      commit('fillNewPost', postInfos)
+      if (postInfos.image == '') {
+        return new Promise((resolve, reject) => {
+          instance.post('/post', postInfos)
+            .then((response) => resolve(response))
+            .catch((error) => reject(error))
+        })
+      } else {
+        let data = new FormData()
+        data.append('post', `{"text": "${postInfos.text}"}`)
+        data.append('image', postInfos.image, postInfos.image.name)
+        return new Promise((resolve, reject) => {
+          instance.post('/post', data)
+            .then(commit('fillNewPost', {text: '', image: ''}))
+            .then((response) => resolve(response))
+            .catch((error) => reject(error))
+        })
+      }
     },
     updatePost: ({commit}, postUpdateInfos) => {
       commit
       return new Promise((resolve, reject) => {
         instance.put('/post/:id', postUpdateInfos)
           .then((response) => {
-            //getPosts()
             resolve(response)
           })
           .catch((error) => reject(error))
@@ -112,21 +154,18 @@ export default createStore({
       commit
       return new Promise((resolve, reject) => {
         instance.delete('/post/:id')
-          .then((response) => {
-            //getPosts()
-            resolve(response)
-          })
+          .then((response) => resolve(response))
           .catch((error) => reject(error))
       })
     },
     likePost: ({commit}, likePayload) => {
       commit
+      const likeRequest = {
+        like: likePayload.like
+      }
       return new Promise((resolve, reject) => {
-        instance.post('/post/:id/like', likePayload)
-          .then((response) => {
-            //getPosts()
-            resolve(response)
-          })
+        instance.post(`/post/${likePayload.id}/like`, likeRequest)
+          .then((response) => resolve(response))
           .catch((error) => reject(error))
       })
     }

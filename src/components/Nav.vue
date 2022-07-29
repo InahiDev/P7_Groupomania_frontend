@@ -1,7 +1,7 @@
 <template>
   <nav>
-    <router-link to="/">Page d'accueil</router-link> | 
-    <router-link to="/user">Profil</router-link>
+    <router-link to="/home"><i class="fa-solid fa-house"></i> Page d'accueil</router-link> | 
+    <router-link to="/user"><i class="fa-solid fa-circle-user"></i> Profil</router-link>
   </nav>
   <router-view/>
 </template>
@@ -12,7 +12,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scopped>
+<style lang="scss">
 nav {
   display: flex;
   width: 100%;

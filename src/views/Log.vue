@@ -11,8 +11,11 @@
           <input v-model="password" class="log-form__input" type="password" placeholder="Mot de passe" />
         </form>
       </div>
-      <button @click="login()" @keyup.enter="login()" v-if="mode =='login'" :disabled="!filledInputs()" class="button button--form">Se connecter</button>
-      <button @click="createAccount()" @keyup.enter="createAccount()" v-if="mode =='create'" :disabled="!filledInputs()" class="button button--form">S'inscrire</button>
+      <div class="container__errorMsg" v-if="status == 'error_user_path'">
+        <p class="errorMsg">{{ errorMsg }}</p>
+      </div>
+      <button @click="login()" @keyup.enter="login()" v-if="mode =='login'" :disabled="!validatedInputs()" class="button button--form">Se connecter</button>
+      <button @click="createAccount()" @keyup.enter="createAccount()" v-if="mode =='create'" :disabled="!validatedInputs()" class="button button--form">S'inscrire</button>
     </div>
   </div>
 </template>
@@ -20,6 +23,9 @@
 <script>
 import { mapState } from 'vuex'
 import ButtonView from '@/components/Button.vue'
+
+const mailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
+
 
 export default {
   name: "LogView",
@@ -36,8 +42,8 @@ export default {
     ButtonView
   },
   methods: {
-    filledInputs() {
-      if (this.email != '' & this.password != '') {
+    validatedInputs() {
+      if (mailRegex.test(this.email) && this.password != '') {
         return true
       } else {
         return false
@@ -74,7 +80,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 .card--log {
   background-color: #4E5166;

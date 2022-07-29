@@ -4,7 +4,7 @@
     <h1>Groupomania, Réseau social d'entreprise</h1>
     <div class="nav-unlog">
       <NavView />
-      <ButtonView buttonText="Déconnexion" @click="unlog()" @keyup.enter="unlog()" />
+      <ButtonView buttonText="Déconnexion" @click="unlog" @keyup.enter="unlog" />
     </div>
   </header>
 </template>
