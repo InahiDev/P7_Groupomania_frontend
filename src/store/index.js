@@ -62,6 +62,14 @@ export default createStore({
     posts(state, dataArray) {
       state.posts = dataArray
     },
+    updateOnePost(state, returnedPost) {
+      for (let post of state.posts) {
+        if (post.id === returnedPost.id) {
+          post = returnedPost
+          return
+        }
+      }
+    },
     fillNewPost(state, newPost) {
       if (newPost.image == '') {
         state.newPost = {
@@ -73,6 +81,48 @@ export default createStore({
           text: newPost.text,
           image: newPost.image
         }
+      }
+    },
+    changeLikes(state, likePostInfos) {
+      let postToUpdate = state.posts.find(post => post.id == likePostInfos.id)
+      let usersLiked = postToUpdate.usersLiked
+      let usersDisliked = postToUpdate.usersDisliked
+      let userId = state.user.userId
+      switch (likePostInfos.like) {
+        case 1:
+          if (!usersLiked.includes(userId)) {
+            usersLiked.push(userId)
+            postToUpdate.likes = usersLiked.length
+          }
+          if (usersDisliked.includes(userId)) {
+            const userIdx = usersDisliked.indexOf(userId)
+            usersDisliked.splice(userIdx, 1)
+            postToUpdate.dislikes = usersDisliked.length
+          }
+          break
+        case -1:
+          if (!usersDisliked.includes(userId)) {
+            usersDisliked.push(userId)
+            postToUpdate.dislikes = usersDisliked.length
+          }
+          if (usersLiked.includes(userId)) {
+            const userIdx = usersLiked.indexOf(userId)
+            usersLiked.splice(userIdx, 1)
+            postToUpdate.likes = usersLiked.length
+          }
+          break
+        case 0:
+          if (usersLiked.includes(userId)) {
+            const userIdx = usersLiked.indexOf(userId)
+            usersLiked.splice(userIdx, 1)
+            postToUpdate.likes = usersLiked.length
+          }
+          if (usersDisliked.includes(userId)) {
+            const userIdx = usersDisliked.indexOf(userId)
+            usersDisliked.splice(userIdx, 1)
+            postToUpdate.dislikes = usersDisliked.length
+          }
+          break
       }
     }
   },
@@ -120,6 +170,16 @@ export default createStore({
           .catch((error) => reject(error))
       })
     },
+    getOnePost: ({commit}, postInfos) => {
+      return new Promise((resolve, reject) => {
+        instance.get(`/post/${postInfos.id}`)
+          .then((response) => {
+            commit('updateOnePost', response.data.post)
+            resolve(response)
+          })
+          .catch((error) => reject(error))
+      })
+    },
     createPost: ({commit}, postInfos) => {
       commit('fillNewPost', postInfos)
       if (postInfos.image == '') {
@@ -159,12 +219,13 @@ export default createStore({
       })
     },
     likePost: ({commit}, likePayload) => {
-      commit
+      commit('changeLikes', likePayload)
       const likeRequest = {
         like: likePayload.like
       }
       return new Promise((resolve, reject) => {
         instance.post(`/post/${likePayload.id}/like`, likeRequest)
+          .then((response) => console.log(response))
           .then((response) => resolve(response))
           .catch((error) => reject(error))
       })

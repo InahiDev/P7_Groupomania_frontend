@@ -6,16 +6,16 @@
         <img :src="content.image" />
       </div>
       <div class="card--post__like">
-        <p><span class="notliked" v-if="liked = 0"><i @click="like()" :disabled="disliked != 0" class="fa-regular fa-thumbs-up"></i></span>
-        <span class="Liked" v-else><i @click="neutralLike()" class="fa-regular fa-thumbs-up"></i></span> {{ content.likes }}
+        <p><span v-if="content.usersLiked.includes(user.userId)" class="liked" :class="{ 'liked--not': !checkLike() }" ><i @click="neutralLike()" class="fa-regular fa-thumbs-up"></i></span>
+        <span class="notLiked" v-else><i @click="like()" class="fa-regular fa-thumbs-up"></i></span> {{ content.likes }}
          | 
-        <span class="notliked" v-if="disliked =0"><i @click="dislike()" :disabled="like != 0" class="fa-regular fa-thumbs-down"></i></span>
-        <span class="notliked" v-else><i @click="neutralLike()" :disabled="like != 0" class="fa-regular fa-thumbs-down"></i></span>
+        <span v-if="content.usersDisliked.includes(user.userId)" class="disliked" :class="{ 'disliked--not': !checkDislike() }"><i @click="neutralLike()" class="fa-regular fa-thumbs-down"></i></span>
+        <span class="notLiked" v-else><i @click="dislike()" class="fa-regular fa-thumbs-down"></i></span>
          {{ content.dislikes }}</p>
       </div>
       <div class="control" v-if="content.userId == user.userId">
-        <ButtonView buttonText="Modifier" />
-        <ButtonView buttonText="Supprimer" />
+        <ButtonView @click="updatePost" buttonText="Modifier" />
+        <ButtonView @click="deletePost" buttonText="Supprimer" />
       </div>
     </article>
   </section>
@@ -30,10 +30,13 @@ export default {
   components: {
     ButtonView
   },
+  mounted() {
+    this.$store.dispatch('getPosts')
+  },
   data() {
     return {
-      liked: 0,
-      disliked: 0,
+      liked: false,
+      disliked: false,
     }
   },
   props: {
@@ -43,38 +46,86 @@ export default {
       image: String,
       likes: Number,
       dislikes: Number,
+      liked: Boolean,
+      disliked: Boolean,
     }
   },
   computed: {
-    ...mapState(['user'])
+    ...mapState(['user', 'posts'])
   },
   methods: {
+    checkLike() {
+      if (this.content.usersLiked.includes(this.user.userId)) {
+        this.liked = true
+        return true
+      } else {
+        this.liked = false
+        return false
+      }
+    },
+    checkDislike() {
+      if (this.content.usersDisliked.includes(this.user.userId)) {
+        this.disliked = true
+        return true
+      } else {
+        this.disliked = false
+        return false
+      }
+    },
     like() {
-      this.liked = 1
-
-      //this.$store.dispatch('likePost', {
-      //  like: 1,
-      //  id: this.post.id
-      //  })
+      this.liked = true,
+      this.disliked = false
+      this.$store.dispatch('likePost', {
+        like: 1,
+        id: this.content.id
+        })
+        .then(this.checkLike(), this.checkDislike())
+        //.then(this.$store.dispatch('getOnePost', { id: this.content.id }))
+        .catch((error) => console.log(error))
     },
     dislike() {
-      this.dislike = 1
-      //this.$store.dispatch('likePost', {
-      //  like: -1,
-      //  id: this.content.id
-      //  })
+      this.liked = false
+      this.disliked = true
+      this.$store.dispatch('likePost', {
+        like: -1,
+        id: this.content.id
+        })
+        .then(this.checkLike(), this.checkDislike())
+        //.then(this.$store.dispatch('getOnePost', { id: this.content.id }))
+        .catch((error) => console.log(error))
     },
     neutralLike() {
-      this.liked = 0
-      this.disliked = 0
+      this.liked = false
+      this.disliked = false
       this.$store.dispatch('likePost', {
         like: 0,
         id: this.content.id
         })
+        .then(this.checkLike(), this.checkDislike())
+        //.then(this.$store.dispatch('getOnePost', { id: this.content.id }))
+        .catch((error) => console.log(error))
     }
   }
 }
 </script>
 
 <style lang="scss">
+
+.liked {
+  color: green;
+
+  &--not {
+    color: black;
+  }
+}
+
+.disliked {
+  color: red;
+
+  &--not {
+    color: black;
+  }
+}
+
+
 </style>

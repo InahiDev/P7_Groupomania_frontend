@@ -7,19 +7,28 @@ const routes = [
   {
     path: '/',
     name: 'login',
-    component: LogView
+    component: LogView,
+    meta: {
+      title: "Connexion",
+    }
   },
   {
     path: '/home',
     name: 'home',
     component: HomeView,
-    props: true
+    props: true,
+    meta: {
+      title: "Accueil"
+    }
   },
   {
     path: '/user',
     name: 'user',
     component: UserView,
-    props: true
+    props: true,
+    meta: {
+      title: "Page Utilisateur"
+    }
   }
 ]
 

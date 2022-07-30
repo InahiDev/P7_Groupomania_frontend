@@ -14,8 +14,8 @@
       <div class="container__errorMsg" v-if="status == 'error_user_path'">
         <p class="errorMsg">{{ errorMsg }}</p>
       </div>
-      <button @click="login()" @keyup.enter="login()" v-if="mode =='login'" :disabled="!validatedInputs()" class="button button--form">Se connecter</button>
-      <button @click="createAccount()" @keyup.enter="createAccount()" v-if="mode =='create'" :disabled="!validatedInputs()" class="button button--form">S'inscrire</button>
+      <ButtonView buttonText="Se connecter" @click="login()" @keyup.enter="login()" v-if="mode =='login'" :disabled="!validatedInputs()" class="button button--form" />
+      <ButtonView buttonText="S'enregistrer" @click="createAccount()" @keyup.enter="createAccount()" v-if="mode =='create'" :disabled="!validatedInputs()" class="button button--form" />
     </div>
   </div>
 </template>
@@ -38,7 +38,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(['status', 'user']),
+    ...mapState(['status', 'user'])
+  },
+  components: {
     ButtonView
   },
   methods: {

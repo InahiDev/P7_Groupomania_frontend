@@ -51,6 +51,12 @@ export default {
     this.$store.dispatch('getPosts')
   },
   methods: {
+    updateLikesCount() {
+      this.content.likes = this.content.usersLiked.length()
+    },
+    updateDislikeCount() {
+      this.content.dislikes = this.content.usersDisliked.length()
+    },
     uploadedFile(event) {
       this.image = event.target.files[0]
       let reader = new FileReader
