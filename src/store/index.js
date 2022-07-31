@@ -70,6 +70,14 @@ export default createStore({
         }
       }
     },
+    deletePost(state, deletedPost) {
+      for (let post of state.posts) {
+        if (post.id === deletedPost.id) {
+          let deletedPostIdx = state.posts.indexOf(post)
+          state.posts.splice(deletedPostIdx, 1)
+        }
+      }
+    },
     fillNewPost(state, newPost) {
       if (newPost.image == '') {
         state.newPost = {
@@ -203,17 +211,18 @@ export default createStore({
     updatePost: ({commit}, postUpdateInfos) => {
       commit
       return new Promise((resolve, reject) => {
-        instance.put('/post/:id', postUpdateInfos)
-          .then((response) => {
-            resolve(response)
-          })
+        instance.put(`/post/${postUpdateInfos.id}`, postUpdateInfos)
+          .then((response) => console.log(response))
+        //.then(commit('updateOnePost', ))
+          .then((response) => resolve(response))
           .catch((error) => reject(error))
       })
     },
-    deletePost: ({commit}) => {
+    deletePost: ({commit}, postDeleteInfos) => {
       commit
       return new Promise((resolve, reject) => {
-        instance.delete('/post/:id')
+        instance.delete(`/post/${postDeleteInfos.id}`)
+          .then(commit('deletePost', postDeleteInfos))
           .then((response) => resolve(response))
           .catch((error) => reject(error))
       })
@@ -225,7 +234,6 @@ export default createStore({
       }
       return new Promise((resolve, reject) => {
         instance.post(`/post/${likePayload.id}/like`, likeRequest)
-          .then((response) => console.log(response))
           .then((response) => resolve(response))
           .catch((error) => reject(error))
       })

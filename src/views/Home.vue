@@ -16,7 +16,7 @@
             <i id="image-uploader" class="fa-solid fa-circle-plus" @click="onUpload"></i><input type="file" id="input__image" class="ring-cross" accept="image/*" ref="image" @change="uploadedFile" />
           </div>-->
           <div class="car--post__img--unloaded" v-if="this.image == ''">
-            <i id="image-uploader" class="fa-solid fa-circle-plus" @click="onUpload"></i><input type="file" id="input__image" class="ring-cross" accept="image/*" ref="image" @change="uploadedFile" hidden/>
+            <i id="image-uploader" class="fa-solid fa-circle-plus" @click="activateUpload"></i><input type="file" id="input__image" class="ring-cross" accept="image/*" ref="image" @change="uploadedFile" hidden/>
           </div>
           <ButtonView buttonText="Créer un post" @click="post()"/>
         </div>
@@ -70,9 +70,8 @@ export default {
     removeImage() {
       this.image = ''
     },
-    onUpload() {
+    activateUpload() {
       let imageInput = document.getElementById('input__image')
-      console.log(imageInput)
       imageInput.click()
     },
     post() {
