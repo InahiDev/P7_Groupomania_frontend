@@ -5,9 +5,9 @@
         <img />
       </div>
       <div class="user__info">
-        <p class="user__info__name">Votre pseudonyme : {{ this.name }}</p>
+        <p class="user__info__name">Votre pseudonyme : {{ this.user.name }}</p>
         <label name="name">Changez votre pseudonyme ici :</label>
-        <input v-model="name" name="name" type="text" min="2" max="20" class="user__input user__input--name" />
+        <input v-model="this.user.alias" name="name" type="text" min="2" max="20" class="user__input user__input--name" />
         <p class="user__info__email">Votre adresse mail : {{ this.user.email }} </p>        
       </div>
       <div class="user__delete">

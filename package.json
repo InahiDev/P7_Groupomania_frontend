@@ -10,9 +10,9 @@
   "dependencies": {
     "axios": "^0.27.2",
     "core-js": "^3.8.3",
+    "dotenv": "^16.0.1",
     "form-data": "^4.0.0",
     "fs": "^0.0.1-security",
-    "normalize-scss": "^7.0.1",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"

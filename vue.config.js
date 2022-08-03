@@ -4,7 +4,12 @@ module.exports = defineConfig({
   css: {
     loaderOptions: {
       scss: {
-        additionalData: `@import "@/styles/main.scss";`
+        additionalData: `
+          @import "./src/styles/utils/_variables.scss";
+          @import "./src/styles/utils/_mixins.scss";
+          @import "./src/styles/utils/_functions.scss";
+          @import "./src/styles/utils/_extensions.scss";
+        `
       }
     }
   }

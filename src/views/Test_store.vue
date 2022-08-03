@@ -6,6 +6,24 @@
 
 
 
+<script>
+validateUpdate() {
+  //Mentorat Fabien idée de reconception de la fonction
+
+  // Premier if !this.newText
+// => !this.changedImg === return
+// => !this.changedImg && this.removeImg => appel API suppression image
+// => this.changedImg => envoi au back update image only
+// Second cas newText existe
+// => !this.changedImage && !this.removeImg => Appel API textUpdateOnly
+// => !this.changedImage 
+//
+
+
+
+</script>
+
+
   <!--<template>
   <div class="log-form">
     <form>

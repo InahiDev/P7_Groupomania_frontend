@@ -5,10 +5,7 @@
 @import './Utils/extensions';
 
 //Importation des fichiers Base
-@import './Base/normalize';
-@import './Base/root';
 @import './Base/base';
-@import './Base/typography';
 
 //Importation des fichiers Components
 @import './Components/index';
@@ -19,3 +16,5 @@
 @import './Pages/log';
 @import './Pages/home';
 @import './Pages/profile';
+@import './Pages/notfound';
+@import './Pages/user';

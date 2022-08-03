@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LogView from '../views/Log.vue'
 import HomeView from '../views/Home.vue'
 import UserView from '../views/User.vue'
+import NotFound from '../views/NotFound.vue'
 
 const routes = [
   {
@@ -9,7 +10,13 @@ const routes = [
     name: 'login',
     component: LogView,
     meta: {
-      title: "Connexion",
+      title: "Groupomania - Connexion",
+      metaTags: [
+        {
+          name: "description",
+          content: "Interface de connection et d'enregistrement de compte au réseau social d'entreprise Groupomania"
+        }
+      ]
     }
   },
   {
@@ -18,7 +25,13 @@ const routes = [
     component: HomeView,
     props: true,
     meta: {
-      title: "Accueil"
+      title: "Groupomania - Accueil",
+      metaTags: [
+        {
+          name: "description",
+          content: "Page d'accueil du réseau social d'entreprise Groupomania. Un espace communautaire destiné aux membres de l'entreprise. Convivialité et respect sont de rigueur! Échanger, partager, liker!"
+        }
+      ]
     }
   },
   {
@@ -27,7 +40,27 @@ const routes = [
     component: UserView,
     props: true,
     meta: {
-      title: "Page Utilisateur"
+      title: "Groupomania - Page Personnelle",
+      metaTags: [
+        {
+          name: "description",
+          content: "Page personnelle de l'utilisateur du réseau social d'entreprise Groupomania. Vous pouvez ici, actualiser vos informations perosnnelles."
+        }
+      ]
+    }
+  },
+  {
+    name: "notFound",
+    path: '/:pathmatch(.*)',
+    component: NotFound,
+    meta: {
+      title: "Erreur 404 - Page non trouvée",
+      metaTags: [
+        {
+          name: "description",
+          content: "Page indisponible. La ressource demandée n'existe pas!"
+        }
+      ]
     }
   }
 ]
@@ -37,10 +70,48 @@ const router = createRouter({
   routes
 })
 
+router.beforeEach((to, from, next) => {
+  const nearestWithTitle = to.matched.slice().reverse().find(route => route.meta && route.meta.title)
+  const nearestWithMeta = to.matched.slice().reverse().find(route => route.meta && route.meta.metaTags)
+  const previousNearestWithMeta = from.matched.slice().reverse().find(route => route.meta && route.meta.metaTags)
+
+  if (nearestWithTitle) {
+    document.title = nearestWithTitle.meta.title
+  } else if (previousNearestWithMeta) {
+    document.title = previousNearestWithMeta.meta.title
+  }
+
+  Array.from(document.querySelectorAll('[data-vue-router-controlled]')).map(element => element.parentNode.removeChild(element))
+
+  if (!nearestWithMeta) {
+    return next()
+  }
+
+  nearestWithMeta.meta.metaTags.map(tagDef => {
+    const tag = document.createElement('meta')
+    
+    Object.keys(tagDef).forEach(key => {
+      tag.setAttribute(key, tagDef[key])
+    })
+
+    tag.setAttribute('data-vue-router-controlled', '')
+
+    return tag
+  })
+
+  .forEach(tag => document.head.appendChild(tag))
+
+  next()
+})
+
+router.afterEach((to) => {
+  document.title = to.meta.title
+})
+
 // route level code-splitting
 // this generates a separate chunk (about.[hash].js) for this route
 // which is lazy-loaded when the route is visited.
 //component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
 
 
-export default router
+export default router 
