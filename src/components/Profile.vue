@@ -1,18 +1,9 @@
 <template>
   <div class="card">
     <section class="user">
-      <div class="user__avatar">
-        <img />
-      </div>
-      <div class="user__info">
-        <p class="user__info__name">Votre pseudonyme : {{ this.user.name }}</p>
-        <label name="name">Changez votre pseudonyme ici :</label>
-        <input v-model="this.user.alias" name="name" type="text" min="2" max="20" class="user__input user__input--name" />
-        <p class="user__info__email">Votre adresse mail : {{ this.user.email }} </p>        
-      </div>
       <div class="user__delete">
-        <h2>Supprimer votre compte :</h2>
-        <ButtonView buttonText="Suppression" />
+        <h2>Supprimer votre compte</h2>
+        <ButtonView class="button--delete" buttonText="Suppression" />
       </div>
     </section>
   </div>
@@ -41,3 +32,14 @@ export default {
 }
 
 </script>
+
+<style lang="scss">
+.user__delete {
+  .button--delete {
+    width: 70%;
+    height: 30px;
+    border-radius: 15px / 50%;
+  }
+}
+
+</style>

@@ -1,11 +1,11 @@
 <template>
   <header class="banner">
-    <LogoView />
-    <h1>Groupomania, Réseau social d'entreprise</h1>
-    <div class="nav-unlog">
-      <NavView />
-      <ButtonView buttonText="Déconnexion" @click="unlog" @keyup.enter="unlog" />
+    <div class="container container--banner" v-if="this.$route.name != 'login'">
+      <LogoView />
+      <ButtonView class="button button--unlog" buttonText="Déconnexion" @click="unlog" @keyup.enter="unlog" />
     </div>
+    <NavView v-if="this.$route.name != 'login'"/>
+    <h1>Groupomania, Réseau social d'entreprise</h1>
   </header>
 </template>
 
@@ -30,13 +30,28 @@ export default {
 }
 </script>
 
-<style lang="scss" scopped>
+<style lang="scss">
 .banner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  @include column;
 
+  .container--banner {
+    @include row(space-between, center);
+    box-sizing: border-box;
+    padding: 0px 20px;
+
+    .button--unlog {
+      width: 30%;
+      font-size: 0.8rem;
+      border-radius: 10px / 50%;
+    }
+    }
+
+  h1 {
+    order: 2;
+    width: 100%;
+    font-size: 1.5rem;
+    margin: 25px;
+  }
 
   @include desktop {
     display: flex;
@@ -48,14 +63,5 @@ export default {
     padding: 0 50px;
   } 
 }
-
-.nav-unlog {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 13%;
-}
-
 
 </style>

@@ -1,8 +1,10 @@
 <template>
   <BannerView />
-  <div>
-    <h1>Erreur 404 - La page que vous cherchez n'existe pas!</h1>
-  </div>
+  <main>
+    <div>
+      <h1>Erreur 404 - La page que vous cherchez n'existe pas!</h1>
+    </div>
+  </main>
 </template>
 
 <script>
@@ -12,6 +14,18 @@ export default {
   name: "NotFound",
   components: {
     BannerView,
+  },
+  mounted() {
+    let user = localStorage.getItem('user')
+    if (!user) {
+      this.$store.state.user =  {
+        userId: '',
+      token: ''
+      }
+    } else {
+      this.$store.state.user = JSON.parse(user)
+      this.$store.state.status = "logedIn"
+    }
   }
 }
 </script>

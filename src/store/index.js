@@ -7,19 +7,16 @@ const instance = axios.create({
   baseURL: 'http://localhost:3000/api'
 })
 
-const unlogUser = {
-  userId: '',
-  token: '',
-}
-
 let user = localStorage.getItem('user')
 if (!user) {
-  user = unlogUser
+  user =  {
+    userId: '',
+    token: ''
+  }
 } else {
   user = JSON.parse(user)
   instance.defaults.headers.common['Authorization'] = `Bearer ${user.token}`
 }
-
 
 export default createStore({
   state: {
@@ -31,7 +28,7 @@ export default createStore({
       alias: '',
       avatar: '',
     },
-    posts: [],
+    posts: undefined,
   },
   getters: {
   },
@@ -59,6 +56,15 @@ export default createStore({
     GET_POSTS(state, dataArray) {
       state.posts = dataArray
     },
+    UPDATE_POST(state, updatedPost) {
+      for (let post of state.posts) {
+        if (post.id == updatedPost.id) {
+          let postIdx = state.posts.indexOf(post)
+          state.posts[postIdx] = updatedPost
+          return
+        }
+      }
+    },
     CREATE_POST(state, createdPost) {
       state.posts.unshift(createdPost)
     },
@@ -80,7 +86,7 @@ export default createStore({
             resolve(response)
           })
           .catch(error => {
-            commit('SET_STATUS', 'error_user_path')
+            commit('SET_STATUS', 'error_user_path--signin')
             reject(error)
           })
       })
@@ -96,7 +102,7 @@ export default createStore({
             resolve(response)
           })
           .catch(error => {
-            commit('SET_STATUS', 'error_user_path')
+            commit('SET_STATUS', 'error_user_path--login')
             reject(error)
           })
       })
@@ -115,12 +121,33 @@ export default createStore({
           .catch(error => reject(error))
       })
     },
-    createPost: ({dispatch}, postInfos) => {
+    //async getOnePost({commit}, post) {
+    //  let updatedPost = await instance.get(`/post/${post.id}`)
+    //  commit('UPDATE_POST', updatedPost.data.post)
+    //},
+
+    //      let updatedPost = await instance.get(`/post/${post.id}`)
+    //      console.log(updatedPost)
+    //
+    //
+    //
+    getOnePost: ({commit}, post) => {
+      return new Promise((resolve, reject) => {
+        instance.get(`/post/${post.id}`)
+          .then((response) => {
+            console.log("étape n°3 => getOnePost")
+            commit('UPDATE_POST', response.data.post)
+            resolve(response)
+          })
+          .catch((error) => reject(error))
+      })
+    },
+    createPost: ({commit}, postInfos) => {
       if (postInfos.image == '') {
         return new Promise((resolve, reject) => {
           instance.post('/post', postInfos)
             .then((response) => {
-              dispatch('getPosts')
+              commit('CREATE_POST', response.data.data)
               resolve(response)
             })
             .catch(error => reject(error))
@@ -132,7 +159,7 @@ export default createStore({
         return new Promise((resolve, reject) => {
           instance.post('/post', data)
             .then((response) => {
-              dispatch('getPosts')
+              commit('CREATE_POST', response.data.data)
               resolve(response)
             })
             .catch(error => reject(error))
@@ -147,7 +174,8 @@ export default createStore({
         return new Promise((resolve, reject) => {
           instance.put(`/post/${postUpdateInfos.id}`, updateTextOnImgReq)
             .then(response => {
-              dispatch('getPosts')
+              console.log("étape 2 => updatePostWithImage")
+              dispatch('getOnePost', postUpdateInfos)
               resolve(response)
             })
             .catch(error => reject(error))
@@ -160,7 +188,8 @@ export default createStore({
         return new Promise((resolve, reject) => {
           instance.put(`/post/${postUpdateInfos.id}`, updateImgDeletionReq)
             .then(response => {
-              dispatch('getPosts')
+              console.log("étape 2 => updatePostWithImage")
+              dispatch('getOnePost', postUpdateInfos)
               resolve(response)
             })
             .catch(error => reject(error))
@@ -170,9 +199,10 @@ export default createStore({
         data.append('post', `{"text": "${postUpdateInfos.text}"}`)
         data.append('image', postUpdateInfos.image, postUpdateInfos.image.name)
         return new Promise((resolve, reject) => {
+          console.log("étape 2 => updatePostWithImage")
           instance.put(`/post/${postUpdateInfos.id}`, data)
             .then(response => {
-              dispatch('getPosts')
+              dispatch('getOnePost', postUpdateInfos)
               resolve(response)
             })
             .catch(error => reject(error))
@@ -182,12 +212,13 @@ export default createStore({
     updatePostWithoutImage({dispatch}, postUpdateInfos) {
       if (!postUpdateInfos.image) {
         return new Promise((resolve, reject) => {
+          console.log("étape 2 => updatePostWithoutImage")
           instance.put(`/post/${postUpdateInfos.id}`, {
             text: postUpdateInfos.text,
             image: ""
           })
             .then(response => {
-              dispatch('getPosts')
+              dispatch('getOnePost', postUpdateInfos)
               resolve(response)
             })
             .catch((error) => reject(error))
@@ -197,9 +228,10 @@ export default createStore({
         data.append('post', `{"text": "${postUpdateInfos.text}"}`)
         data.append('image', postUpdateInfos.image, postUpdateInfos.image.name)
         return new Promise((resolve, reject) => {
+          console.log("étape 2 => updatePostWithoutImage")
           instance.put(`/post/${postUpdateInfos.id}`, data)
             .then(response => {
-              dispatch('getPosts')
+              dispatch('getOnePost', postUpdateInfos)
               resolve(response)
             })
             .catch((error) => reject(error))
@@ -223,7 +255,7 @@ export default createStore({
       return new Promise((resolve, reject) => {
         instance.post(`/post/${likePayload.id}/like`, likeRequest)
           .then((response) => {
-            dispatch('getPosts')
+            dispatch('getOnePost', likePayload)
             resolve(response)
           })
           .catch(error => reject(error))

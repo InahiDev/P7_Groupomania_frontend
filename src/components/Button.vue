@@ -12,21 +12,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-button {
-  background-color: #FD2D01;
-  border-radius: 30px;
-  color: white;
-  cursor: pointer;
+.button {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px / 50%;
+  background-color: $color-primary;
+  color: #FFF;
+  font-size: 1.3rem;
+  border: none;
+  box-shadow: 2px 2px 5px 2px $color-tertiary;
 
   &:disabled {
-    background-color: #FFD7D7;
-    color: black;
-    cursor: not-allowed;
-  }
-
-  &--form {
-    font-size: 30px;
+    background-color: $color-secondary;
   }
 }
-
 </style>

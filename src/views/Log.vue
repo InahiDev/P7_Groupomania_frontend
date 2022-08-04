@@ -1,6 +1,7 @@
 <template>
+  <BannerView />
   <div class="container container--log">
-    <div class="card--log">
+    <div class="card card--log">
       <h1 v-if="mode == 'login'" class="card--log__title">Connexion</h1>
       <h1 v-else class="card--log__title">Inscription</h1>
       <p v-if="mode == 'login'" class="card--log__subtitle">Vous ne possédez pas encore de compte ?<br/><span class="card--log__action" @click="switchToCreate()">Créer un compte</span></p>
@@ -11,11 +12,16 @@
           <input v-model="password" class="log-form__input" type="password" placeholder="Mot de passe" />
         </form>
       </div>
-      <div class="container__errorMsg" v-if="status == 'error_user_path'">
+      <div class="container__errorMsg" v-if="mode == 'login' && status == 'error_user_path--login'">
         <p class="errorMsg">{{ errorMsg }}</p>
       </div>
-      <ButtonView buttonText="Se connecter" @click="login()" @keyup.enter="login()" v-if="mode =='login'" :disabled="!validatedInputs()" class="button button--form" />
-      <ButtonView buttonText="S'enregistrer" @click="createAccount()" @keyup.enter="createAccount()" v-if="mode =='create'" :disabled="!validatedInputs()" class="button button--form" />
+      <div class="container container__errorMsg" v-if="mode == 'create' && status == 'error_user_path--signin'">
+        <p class="errorMsg">{{ errorMsg }}</p>
+      </div>
+      <div class="container card--log__button">
+        <ButtonView buttonText="Se connecter" @click="login()" @keyup.enter="login()" v-if="mode =='login'" :disabled="!validatedInputs()" class="button--form" />
+        <ButtonView buttonText="S'enregistrer" @click="createAccount()" @keyup.enter="createAccount()" v-if="mode =='create'" :disabled="!validatedInputs()" class="button--form" />
+      </div>
     </div>
   </div>
 </template>
@@ -23,9 +29,9 @@
 <script>
 import { mapState } from 'vuex'
 import ButtonView from '@/components/Button.vue'
+import BannerView from '@/components/Banner.vue'
 
 const mailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
-
 
 export default {
   name: "LogView",
@@ -41,7 +47,8 @@ export default {
     ...mapState(['status', 'user'])
   },
   components: {
-    ButtonView
+    ButtonView,
+    BannerView
   },
   methods: {
     validatedInputs() {
@@ -53,9 +60,11 @@ export default {
     },
     switchToCreate() {
       this.mode = 'create'
+      this.$store.state.status = ''
     },
     switchToLogin() {
       this.mode = 'login'
+      this.$store.state.status = ''
     },
     createAccount() {
       this.$store.dispatch('createAccount', {
@@ -75,6 +84,15 @@ export default {
     }
   },
   mounted() {
+    let user = localStorage.getItem('user')
+    if (!user) {
+      this.$store.state.user =  {
+        userId: '',
+      token: ''
+      }
+    } else {
+      this.$store.state.user = JSON.parse(user)
+    }
     if (this.$store.state.user.userId != '') {
       this.$router.push('home')
     }
@@ -83,73 +101,102 @@ export default {
 </script>
 
 <style lang="scss">
+.container--log {
+  height: 83vh;
+  @include column;
+}
 
 .card--log {
-  background-color: #4E5166;
-  width: 90%;
-  box-sizing: border-box;
-  padding: 20px;
-  border-radius: 10%;
-  font-family: Playfair;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  color: white;
-
-  > * {
-    flex: 1;
-    margin: 10px;
-  }
+  height: 70%;
+  @include column(space-around);
 
   &__title {
-    font-size: 40px;
-    font-weight: bold;
+    margin: 0;
+    text-shadow: 2px 2px 10px $color-tertiary;
   }
 
   &__subtitle {
-    font-size: 25px;
+    margin: 0;
+    font-size: 1.4rem;
   }
 
   &__action {
-    font-style: italic;
-    font-size: 25px;
+    display: block;
+    margin: 10px 0;
+    font-size: 1.3rem;
     text-decoration: underline;
+    color: $color-primary;
+  }
 
-    &:hover {
-      cursor: pointer;
+  &__button {
+    height: 30px;
+  }
+
+  @include tablet {
+    height: 50%;
+
+    &__title {
+      font-size: 3rem;
+    }
+
+    &__subtitle {
+      font-size: 2rem;
+    }
+
+    &__action {
+      font-size: 1.9rem 
+    }
+
+    &__button {
+      height: 50px;
+    }
+  }
+
+}
+
+.log-form {
+  @include column;
+  width: 100%;
+
+  form {
+    height: 85px;
+    width: 100%;
+    @include column(space-between, center)
+  }
+
+  &__input {
+    margin: 5px 0;
+    box-sizing: border-box;
+    width: 100%;
+    height: 30px;
+    background-color: #F6F6F6;
+    border: 0 solid black;
+    padding: 0 10px;
+    border-radius: 25px;
+    box-shadow: 2px 2px 5px 2px #777;
+  }
+
+  @include tablet {
+    form {
+      height: 120px;
+    }
+
+    &__input {
+      margin: 10px 0;
+      height: 50px;
+      padding: 0 20px;
+      font-size: 1.5rem;
     }
   }
 }
 
-.log-form form{
-  display: flex;
-  flex-direction: column;
+.errorMsg {
+  margin: 0;
+  font-size: 1.2rem;
 
-  input {
-    height: 25px;
-    border-radius: 10px;
-    background-color: #F6F6F6;
-    margin: 10px 0;
+  @include tablet {
+    font-size: 1.5rem;
   }
 }
 
-.button {
-  background-color: #FD2D01;
-  border-radius: 30px;
-  color: white;
-  cursor: pointer;
-  
-  &--form {
-    font-size: 30px;
-  }
-
-
-  &:disabled {
-    background-color: #FFD7D7;
-    color: black;
-    cursor: not-allowed;
-  }
-
-
-}
 </style>

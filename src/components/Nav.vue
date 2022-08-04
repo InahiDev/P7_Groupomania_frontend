@@ -1,7 +1,8 @@
 <template>
   <nav>
-    <router-link to="/home"><i class="fa-solid fa-house"></i> Page d'accueil</router-link> | 
-    <router-link to="/user"><i class="fa-solid fa-circle-user"></i> Profil</router-link>
+        <router-link class="link" to="/home"><i class="fa-solid fa-house"></i> Page d'accueil</router-link> |
+        <router-link class="link" to="/user"><i class="fa-solid fa-circle-user"></i> Profil Utilisateur</router-link>
+
   </nav>
   <router-view/>
 </template>
@@ -14,22 +15,17 @@ export default {
 
 <style lang="scss">
 nav {
-  display: flex;
+  @include row;
   width: 100%;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 30px;
-
+  font-size: 1.2rem;
+  
   a {
-    font-weight: bold;
-    color: #2c3e50;
+    width: 45%;
+    color: $color-tertiary;
 
     &.router-link-exact-active {
-      color: #42b983;
+      color: $color-secondary;
     }
   }
-
 }
-
 </style>

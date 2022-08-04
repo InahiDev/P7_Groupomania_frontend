@@ -1,31 +1,27 @@
 <template>
   <BannerView/>
-  <section class="container--post">
-    <article class="card--post newpost">
-      <div class="card--post newpost">
-        <div class="car__post__img">
-          <div class="card--post__img--added" v-if="this.image != ''">
+  <main>
+    <section class="section__post">
+      <div class="card">
+        <article class="card__article card__article--newpost">
+          <textarea maxlength="255" v-model="text" class="content" type="text" placeholder="Entrez votre nouveau post ici!!!"></textarea>
+          <div class="card__article--newpost__img card__article--newpost__img--added" v-if="this.image != ''">
             <img :src="this.previewImage"/>
             <i id="image-killer" class="fa-solid fa-circle-minus" @click="removeImage"></i> | Supprimer l'image
           </div>  
-        </div>
-        <input v-model="text" class="newpost--content" type="text" />
-        <div class="card--post__img">
-          <!--<div class="card--post__img--added" v-if="this.image != ''">
-            <img :src="this.previewImage"/>
-            <i id="image-uploader" class="fa-solid fa-circle-plus" @click="onUpload"></i><input type="file" id="input__image" class="ring-cross" accept="image/*" ref="image" @change="uploadedFile" />
-          </div>-->
-          <div class="car--post__img--unloaded" v-if="this.image == ''">
-            <i id="image-uploader" class="fa-solid fa-circle-plus" @click="activateUpload"></i><input type="file" id="input__image" class="ring-cross" accept="image/*" ref="image" @change="uploadedFile" hidden/>
+          <div class="card__article--newpost__img">
+            <div class="card__article--newpost__img--unloaded" v-if="this.image == ''">
+              <i id="image-uploader" class="fa-solid fa-circle-plus" @click="activateUpload"></i> | Ajouter une image<input type="file" id="input__image" class="ring-cross" accept="image/*" ref="image" @change="uploadedFile" hidden/>
+            </div>
+            <ButtonView class="button--create" buttonText="Créer un post" @click="post()"/>
           </div>
-          <ButtonView buttonText="Créer un post" @click="post()"/>
-        </div>
+        </article>
       </div>
-    </article>
-    <div v-for="(post, idx) in posts" :key='idx'>
-      <PostView :content="post"/>
-    </div>
-  </section>
+      <div class="card" v-for="(post, idx) in posts" :key='idx'>
+        <PostView :content="post"/>
+      </div>
+    </section>
+  </main>
 </template>
 
 <script>
@@ -85,7 +81,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(['posts'])
+    ...mapState(['posts']),
   },
   components: {
     BannerView,
@@ -97,23 +93,63 @@ export default {
 </script>
 
 <style lang="scss">
-.card {
-  &--post {
-    width: 95%;
-    background-color: #FFF;
-    border-radius: 30px;
-    box-sizing: border-box;
-    padding: 20px;
-    margin: 10px 0;
-  
-    &__img {
-      width: 100%;
-    
-      img {
-        object-fit: contain;
-        width: 100%;
+main {
+  width: 100%;
+
+  .section__post {
+    width: 100%;
+
+    .card__article {
+
+
+      &--newpost {
+        
+        textarea.content {
+          width: 100%;
+          height: 100px;
+          resize: none;
+          box-sizing: border-box;
+          padding: 10px;
+          text-align: center;
+          border-radius: 5px;
+
+          &::placeholder {
+            text-justify: center;
+          }
+        }
+
+        &__img {
+          width: 100%;
+          margin: 0;
+
+          &--added {
+            img {
+              width: 100%;
+              object-fit: contain;
+            }
+            i {
+              margin: 5px;
+            }
+          }
+
+          &--unloaded {
+            margin: 5px 0;            
+          }
+
+          .button--create {
+            width: 60%;
+            border-radius: 15px / 50%;
+            margin: 10px 0 0 0;
+          }
+        }
+
       }
     }
   }
 }
+.section__post {
+  width: 100%;
+
+}
+
 </style>

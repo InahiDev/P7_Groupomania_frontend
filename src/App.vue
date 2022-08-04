@@ -9,6 +9,8 @@
 body {
   background-image: linear-gradient(60deg, $color-secondary 0%, $color-primary 100%);
   background-attachment: fixed;
+  box-sizing: border-box;
+  margin: 0;
 }
 
 #app {
@@ -23,13 +25,15 @@ body {
 
 .container {
   width: 100%;
-  height: 97vh;
+}
 
-  &--log {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
+.card {
+  background-color: #FFF;
+  width: 90%;
+  box-sizing: border-box;
+  margin: 5%;
+  padding: 30px;
+  border-radius: 30px;
+  box-shadow: 2px 2px 10px 2px $color-tertiary;
 }
 </style>

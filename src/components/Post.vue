@@ -1,43 +1,41 @@
 <template>
-  <section class="posts">
-    <article class="card--post">
-      <div class="post" v-if="!this.updatingState">
-        <p>{{ content.text }}</p>
-        <div class="card--post__img" v-if="content.image != ''">
-          <img :src="content.image" />
+  <article class="card__article">
+    <div class="card__post" v-if="!this.updatingState">
+      <p>{{ content.text }}</p>
+      <div class="card__post__img" v-if="content.image != null">
+        <img :src="content.image" />
+      </div>
+    </div>
+    <div class="card__post" v-if="this.updatingState">
+      <input type="text" :placeholder="content.text" v-model="newText">
+      <div class="card__post__img" v-if="content.image != ''">
+        <div class="card__post__img--change">
+          <i class="fa-solid fa-circle-plus" @click="activateImgInput"></i> Changer d'image
+          <span v-if="this.changedImg != ''"> | <i class="fa-solid fa-circle-minus change-cancel" @click="removeImageChanges"></i> Annuler le changement d'image</span>
+          <span v-if="!this.removeImg">| <i  class="fa-solid fa-circle-minus change-cancel" @click="removeImage"></i> Supprimer l'image du Post</span>
+          <input type="file" class="ring-cross ring-cross--change-img" accept="image/*" ref="image" @change="uploadNewFile" hidden/>
         </div>
+        <img v-if="!hideExistingImage()" :src="content.image" />
+        <img v-else :src="this.previewChangedImg" />
       </div>
-      <div class="post" v-if="this.updatingState">
-        <input type="text" :placeholder="content.text" v-model="newText">
-        <div class="card--post__img" v-if="content.image != ''">
-          <div class="card--post__img--change">
-            <i class="fa-solid fa-circle-plus" @click="activateImgInput"></i> Changer d'image
-            <span v-if="this.changedImg != ''"> | <i class="fa-solid fa-circle-minus change-cancel" @click="removeImageChanges"></i> Annuler le changement d'image</span>
-            <span v-if="!this.removeImg">| <i  class="fa-solid fa-circle-minus change-cancel" @click="removeImage"></i> Supprimer l'image du Post</span>
-            <input type="file" class="ring-cross ring-cross--change-img" accept="image/*" ref="image" @change="uploadNewFile" hidden/>
-          </div>
-          <img v-if="!hideExistingImage()" :src="content.image" />
-          <img v-else :src="this.previewChangedImg" />
-        </div>
+    </div>
+    <div class="card__post__like">
+      <p><span v-if="content.usersLiked.includes(user.userId)" class="liked" :class="{ 'liked--not': !checkLike() }" ><i @click="neutralLike()" class="fa-regular fa-thumbs-up"></i></span>
+      <span class="notLiked" v-else><i @click="like()" class="fa-regular fa-thumbs-up"></i></span> {{ content.likes }}
+       | 
+      <span v-if="content.usersDisliked.includes(user.userId)" class="disliked" :class="{ 'disliked--not': !checkDislike() }"><i @click="neutralLike()" class="fa-regular fa-thumbs-down"></i></span>
+      <span class="notLiked" v-else><i @click="dislike()" class="fa-regular fa-thumbs-down"></i></span>
+       {{ content.dislikes }}</p>
+    </div>
+    <div class="control" v-if="content.userId == user.userId">
+      <ButtonView @click="updatePostState" buttonText="Modifier" v-if="!this.updatingState"/>
+      <div class="control--changes" v-else>
+        <ButtonView @click="validateUpdate()" buttonText="Confirmer"  />
+        <ButtonView @click="cancelUpdateState" buttonText="Annuler" />
       </div>
-      <div class="card--post__like">
-        <p><span v-if="content.usersLiked.includes(user.userId)" class="liked" :class="{ 'liked--not': !checkLike() }" ><i @click="neutralLike()" class="fa-regular fa-thumbs-up"></i></span>
-        <span class="notLiked" v-else><i @click="like()" class="fa-regular fa-thumbs-up"></i></span> {{ content.likes }}
-         | 
-        <span v-if="content.usersDisliked.includes(user.userId)" class="disliked" :class="{ 'disliked--not': !checkDislike() }"><i @click="neutralLike()" class="fa-regular fa-thumbs-down"></i></span>
-        <span class="notLiked" v-else><i @click="dislike()" class="fa-regular fa-thumbs-down"></i></span>
-         {{ content.dislikes }}</p>
-      </div>
-      <div class="control" v-if="content.userId == user.userId">
-        <ButtonView @click="updatePostState" buttonText="Modifier" v-if="!this.updatingState"/>
-        <div class="control--changes" v-else>
-          <ButtonView @click="validateUpdate()" buttonText="Confirmer"  />
-          <ButtonView @click="cancelUpdateState" buttonText="Annuler" />
-        </div>
-        <ButtonView @click="deletePost" buttonText="Supprimer" />
-      </div>
-    </article>
-  </section>
+      <ButtonView @click="deletePost" buttonText="Supprimer" />
+    </div>
+  </article>
 </template>
 
 <script>
@@ -217,22 +215,59 @@ export default {
 </script>
 
 <style lang="scss">
+.card {
 
-.liked {
-  color: green;
+  &__article {
+    width: 100%;
 
-  &--not {
-    color: black;
+    .control {
+      @include row(space-evenly);
+
+      .button {
+        width: 40%;
+        font-size: 1rem;
+        border-radius: 13px / 50%;
+      }
+    }
+  }
+
+  &__post {
+    width: 100%;
+
+    p {
+      overflow-wrap: break-word;
+    }
+
+    &__img {
+      width: 100%;
+
+      img {
+        width: 100%;
+        object-fit: contain;
+      }
+    }
+
+    &__like {
+      p {
+        margin: 5px 0;
+      }
+
+      .liked {
+        color: green;
+
+        &--not {
+          color: black;
+        }
+      }
+
+      .disliked {
+        color: red;
+
+        &--not {
+          color: black;
+        }
+      }
+    }
   }
 }
-
-.disliked {
-  color: red;
-
-  &--not {
-    color: black;
-  }
-}
-
-
 </style>
