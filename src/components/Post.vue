@@ -22,9 +22,9 @@
           </p>
           <p>
             <span v-if="removeImageFromPost()"><i class="fa-solid fa-circle-minus control-icons" @click="removeImage"></i> Supprimer l'image du post</span>
-            <span v-else><i class="fa-solid fa-circle-xmark control-icons" @click="cancelRemoveImage"></i> Annuler la suppression d'image</span>
+            <span v-if="this.removeImg"><i class="fa-solid fa-circle-xmark control-icons" @click="cancelRemoveImage"></i> Annuler la suppression d'image</span>
           </p>
-          <input type="file" class="ring-cross ring-cross--change-img" accept="image/*" ref="image" @change="uploadNewFile" hidden/>
+          <input type="file" class="input-img" accept="image/*" ref="image" @change="uploadNewFile" hidden/>
         </div>
       </div>
     </div>
@@ -65,6 +65,7 @@ export default {
       updatingState: false,
       changedImg: '',
       previewChangedImg: null,
+      previewChangedImgCache: null,
       newText: '',
       removeImg: false,
       controls: false,
@@ -147,7 +148,7 @@ export default {
     //(!this.removeImg && this.content.image != null) || (content.image == null && changedImg != '')
     activateImgInput() {
       event.stopPropagation()
-      let changeInput = event.target.closest('div.card__post--updating__container--updating__controls').querySelector('input.ring-cross--change-img')
+      let changeInput = event.target.closest('div.card__post--updating__container--updating__controls').querySelector('input.input-img')
       changeInput.click()
     },
     uploadNewFile(event) {
@@ -186,13 +187,14 @@ export default {
     removeImage() {
       event.stopPropagation()
       this.removeImg = true
+      this.previewChangedImgCache = this.previewChangedImg
       this.previewChangedImg = null
       this.changedImg = ''
     },
     cancelRemoveImage() {
       event.stopPropagation()
       this.removeImg = false
-      this.previewChangedImg = null
+      this.previewChangedImg = this.previewChangedImgCache
       this.changedImg = ''
     },
     validateUpdate() {

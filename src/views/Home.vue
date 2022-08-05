@@ -140,6 +140,10 @@ main {
             width: 60%;
             border-radius: 15px / 50%;
             margin: 10px 0 0 0;
+
+            @include tablet {
+              width: 40%;
+            }
           }
         }
 

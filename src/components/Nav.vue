@@ -18,10 +18,21 @@ nav {
   @include row;
   width: 100%;
   font-size: 1.2rem;
+
+  @include tablet {
+    width: 50%;
+    position: absolute;
+    top: 30px;
+    left: 22%;
+  }
   
   a {
     width: 45%;
     color: $color-tertiary;
+
+    @include tablet {
+      width: 100%;
+    }
 
     &.router-link-exact-active {
       color: $color-secondary;

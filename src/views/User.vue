@@ -34,5 +34,9 @@ export default {
 <style lang="scss">
 h2 {
   font-size: 1.5rem;
+
+  @include tablet {
+    font-size: 1.8rem;
+  }
 }
 </style>

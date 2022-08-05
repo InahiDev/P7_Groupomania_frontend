@@ -1,5 +1,5 @@
 <template>
-  <BannerView />
+  <BannerView class="banner--log" />
   <div class="container container--log">
     <div class="card card--log">
       <h1 v-if="mode == 'login'" class="card--log__title">Connexion</h1>
@@ -101,6 +101,18 @@ export default {
 </script>
 
 <style lang="scss">
+.banner--log {
+  margin-top: 50px;
+
+  @include tablet {
+    margin-top: 100px;
+  }
+
+  h1 {
+    margin: 0;
+  }
+}
+
 .container--log {
   height: 83vh;
   @include column;
@@ -130,10 +142,11 @@ export default {
 
   &__button {
     height: 30px;
+    margin-top: 5px;
   }
 
   @include tablet {
-    height: 50%;
+    height: auto;
 
     &__title {
       font-size: 3rem;
@@ -149,6 +162,7 @@ export default {
 
     &__button {
       height: 50px;
+      margin-top: 13px;
     }
   }
 

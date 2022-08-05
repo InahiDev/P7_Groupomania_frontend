@@ -1,11 +1,9 @@
 <template>
   <div class="card">
-    <section class="user">
-      <div class="user__delete">
-        <h2>Supprimer votre compte</h2>
-        <ButtonView class="button--delete" buttonText="Suppression" />
-      </div>
-    </section>
+    <div class="user__delete">
+      <h3>Supprimer votre compte</h3>
+      <ButtonView class="button--delete" buttonText="Suppression" />
+    </div>
   </div>
 </template>
 
@@ -35,10 +33,25 @@ export default {
 
 <style lang="scss">
 .user__delete {
+
+  h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.3rem;
+  }
+
   .button--delete {
     width: 70%;
     height: 30px;
     border-radius: 15px / 50%;
+  }
+
+  @include tablet {
+    h3 {
+      font-size: 1.6rem;
+    }
+    .button--delete {
+      width: 50%;
+    }
   }
 }
 

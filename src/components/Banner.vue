@@ -33,6 +33,9 @@ export default {
 <style lang="scss">
 .banner {
   @include column;
+  @include tablet {
+    width: 90%;
+  }
 
   .container--banner {
     @include row(space-between, center);
@@ -43,6 +46,9 @@ export default {
       width: 30%;
       font-size: 0.8rem;
       border-radius: 10px / 50%;
+      @include tablet {
+        width: 20%;
+      }
     }
     }
 
@@ -51,6 +57,9 @@ export default {
     width: 100%;
     font-size: 1.5rem;
     margin: 25px;
+    @include tablet {
+      font-size: 2rem;
+    }
   }
 
   @include desktop {

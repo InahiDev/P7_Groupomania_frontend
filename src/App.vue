@@ -31,9 +31,13 @@ body {
   background-color: #FFF;
   width: 90%;
   box-sizing: border-box;
-  margin: 5%;
+  margin: 5% auto;
   padding: 30px;
   border-radius: 30px;
   box-shadow: 2px 2px 10px 2px $color-tertiary;
+
+  @include tablet {
+    width: 70%
+  }
 }
 </style>
