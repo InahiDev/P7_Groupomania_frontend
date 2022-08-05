@@ -7,7 +7,7 @@
 
 <style lang="scss">
 body {
-  background-image: linear-gradient(60deg, $color-secondary 0%, $color-primary 100%);
+  background-image: linear-gradient(60deg, $color-primary 0%, $color-secondary 100%);
   background-attachment: fixed;
   box-sizing: border-box;
   margin: 0;
