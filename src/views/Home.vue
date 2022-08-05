@@ -4,7 +4,7 @@
     <section class="section__post">
       <div class="card">
         <article class="card__article card__article--newpost">
-          <textarea maxlength="255" v-model="text" class="content" type="text" placeholder="Entrez votre nouveau post ici!!!"></textarea>
+          <textarea maxlength="255" v-model="text" class="content" placeholder="Entrez votre nouveau post ici!!!"></textarea>
           <div class="card__article--newpost__img card__article--newpost__img--added" v-if="this.image != ''">
             <img :src="this.previewImage"/>
             <i id="image-killer" class="fa-solid fa-circle-minus" @click="removeImage"></i> | Supprimer l'image
@@ -72,9 +72,9 @@ export default {
     },
     post() {
       if (this.text != '') {
+        console.log('étape n°1 post')
         this.$store.dispatch('createPost', {text: this.text, image: this.image})
           .then(this.text = "", this.image = "")
-          .then(this.$store.dispatch('getPosts'))
           .then((response) => console.log(response))
           .catch((error) => console.log(error))
       }

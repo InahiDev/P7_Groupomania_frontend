@@ -6,17 +6,21 @@
         <img :src="content.image" />
       </div>
     </div>
-    <div class="card__post" v-if="this.updatingState">
-      <input type="text" :placeholder="content.text" v-model="newText">
-      <div class="card__post__img" v-if="content.image != ''">
-        <div class="card__post__img--change">
-          <i class="fa-solid fa-circle-plus" @click="activateImgInput"></i> Changer d'image
-          <span v-if="this.changedImg != ''"> | <i class="fa-solid fa-circle-minus change-cancel" @click="removeImageChanges"></i> Annuler le changement d'image</span>
-          <span v-if="!this.removeImg">| <i  class="fa-solid fa-circle-minus change-cancel" @click="removeImage"></i> Supprimer l'image du Post</span>
+    <div class="card__post--updating" v-if="this.updatingState">
+      <textarea class="card__post--updating__content" maxlength="255" :placeholder="content.text" v-model="newText"></textarea>
+      <div class="card__post--updating__container" v-if="content.image != ''">
+        <div class="card__post--updating__container--updating">
+          <span>
+            <i class="fa-solid fa-circle-plus" @click="activateImgInput"></i>
+            <span v-if="this.changedImg == '' && content.image == null">Ajouter une image</span>
+            <span v-if="this.changedImg == '' && content.image != null">Changer d'image</span>
+            <span v-if="this.changedImg != '' && content.image != null"> | <i class="fa-solid fa-circle-minus change-cancel" @click="removeImageChanges"></i>Annuler le changement d'image</span>
+          </span>
+          <span v-if="!this.removeImg && this.content.image != null"><i  class="fa-solid fa-circle-minus change-cancel" @click="removeImage"></i> Supprimer l'image du Post</span>
           <input type="file" class="ring-cross ring-cross--change-img" accept="image/*" ref="image" @change="uploadNewFile" hidden/>
         </div>
-        <img v-if="!hideExistingImage()" :src="content.image" />
-        <img v-else :src="this.previewChangedImg" />
+        <img class="card__post--updating__container--updating__img" v-if="!hideExistingImage()" :src="content.image" />
+        <img class="card__post--updating__container--updating__img" v-else :src="this.previewChangedImg" />
       </div>
     </div>
     <div class="card__post__like">
@@ -27,7 +31,7 @@
       <span class="notLiked" v-else><i @click="dislike()" class="fa-regular fa-thumbs-down"></i></span>
        {{ content.dislikes }}</p>
     </div>
-    <div class="control" v-if="content.userId == user.userId">
+    <div class="control" v-if="content.userId == user.userId || user.isAdmin">
       <ButtonView @click="updatePostState" buttonText="Modifier" v-if="!this.updatingState"/>
       <div class="control--changes" v-else>
         <ButtonView @click="validateUpdate()" buttonText="Confirmer"  />
@@ -76,7 +80,7 @@ export default {
   },
   methods: {
     activateImgInput() {
-      let changeInput = event.target.closest('div.card--post__img--change').querySelector('input.ring-cross--change-img')
+      let changeInput = event.target.closest('div.card__post__img--change').querySelector('input.ring-cross--change-img')
       changeInput.click()
     },
     uploadNewFile(event) {
@@ -244,6 +248,33 @@ export default {
       img {
         width: 100%;
         object-fit: contain;
+      }
+    }
+
+    &--updating {
+      width: 100%;
+
+      &__content {
+          width: 100%;
+          height: 100px;
+          resize: none;
+          box-sizing: border-box;
+          padding: 10px;
+          text-align: center;
+          border-radius: 5px;
+
+          &::placeholder {
+            text-justify: center;
+          }
+      }
+
+      &__container {
+        width: 100%;
+
+        &--updating {
+          width: 100%;
+          @include column;
+        }
       }
     }
 

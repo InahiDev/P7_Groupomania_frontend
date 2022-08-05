@@ -57,6 +57,7 @@ export default createStore({
       state.posts = dataArray
     },
     UPDATE_POST(state, updatedPost) {
+      console.log("étape n°4 UPDATE_POST")
       for (let post of state.posts) {
         if (post.id == updatedPost.id) {
           let postIdx = state.posts.indexOf(post)
@@ -66,6 +67,7 @@ export default createStore({
       }
     },
     CREATE_POST(state, createdPost) {
+      console.log('étape n°3 CREATE_POST')
       state.posts.unshift(createdPost)
     },
     DELETE_POST(state, deletedPost) {
@@ -122,8 +124,8 @@ export default createStore({
       })
     },
     //async getOnePost({commit}, post) {
-    //  let updatedPost = await instance.get(`/post/${post.id}`)
-    //  commit('UPDATE_POST', updatedPost.data.post)
+    //    let updatedPost = await instance.get(`/post/${post.id}`)
+    //    commit('UPDATE_POST', updatedPost.data.post)
     //},
 
     //      let updatedPost = await instance.get(`/post/${post.id}`)
@@ -142,11 +144,25 @@ export default createStore({
           .catch((error) => reject(error))
       })
     },
+    //async createPost({commit}, postInfos) {
+    //  if (postInfos.image == '') {
+    //    try {
+    //      let createdPost = await instance.post('/post', postInfos)
+    //      commit('CREATE_POST', createdPost.data.data)
+    //    } catch(error) {
+    //      console.log(error)
+    //    }
+    //
+    //
+    //  }
+    //},
+    
     createPost: ({commit}, postInfos) => {
       if (postInfos.image == '') {
         return new Promise((resolve, reject) => {
           instance.post('/post', postInfos)
             .then((response) => {
+              console.log('étape n°2 createPost')
               commit('CREATE_POST', response.data.data)
               resolve(response)
             })
@@ -159,6 +175,7 @@ export default createStore({
         return new Promise((resolve, reject) => {
           instance.post('/post', data)
             .then((response) => {
+              console.log('étape n°2 createPost')
               commit('CREATE_POST', response.data.data)
               resolve(response)
             })
