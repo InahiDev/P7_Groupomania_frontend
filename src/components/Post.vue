@@ -1,5 +1,5 @@
 <template>
-  <article class="card__article">
+  <article @click="showControls" class="card__article">
     <div class="card__post" v-if="!this.updatingState">
       <p>{{ content.text }}</p>
       <div class="card__post__img" v-if="content.image != null">
@@ -9,18 +9,23 @@
     <div class="card__post--updating" v-if="this.updatingState">
       <textarea class="card__post--updating__content" maxlength="255" :placeholder="content.text" v-model="newText"></textarea>
       <div class="card__post--updating__container" v-if="content.image != ''">
-        <div class="card__post--updating__container--updating">
-          <span>
-            <i class="fa-solid fa-circle-plus" @click="activateImgInput"></i>
-            <span v-if="this.changedImg == '' && content.image == null">Ajouter une image</span>
-            <span v-if="this.changedImg == '' && content.image != null">Changer d'image</span>
-            <span v-if="this.changedImg != '' && content.image != null"> | <i class="fa-solid fa-circle-minus change-cancel" @click="removeImageChanges"></i>Annuler le changement d'image</span>
-          </span>
-          <span v-if="!this.removeImg && this.content.image != null"><i  class="fa-solid fa-circle-minus change-cancel" @click="removeImage"></i> Supprimer l'image du Post</span>
-          <input type="file" class="ring-cross ring-cross--change-img" accept="image/*" ref="image" @change="uploadNewFile" hidden/>
-        </div>
         <img class="card__post--updating__container--updating__img" v-if="!hideExistingImage()" :src="content.image" />
         <img class="card__post--updating__container--updating__img" v-else :src="this.previewChangedImg" />
+        <div class="card__post--updating__container--updating__controls">
+          <p>
+            <i class="fa-solid fa-circle-plus control-icons" @click="activateImgInput" v-if="plusButtonShow()"></i>
+            <span v-if="addAnImage()"> Ajouter une image</span>
+            <span v-if="changeImage()"> Changer d'image</span>
+          </p>
+          <p>
+            <span v-if="this.changedImg && content.image"><i class="fa-solid fa-circle-xmark control-icons" @click="removeImageChanges"></i> Annuler le changement d'image</span>
+          </p>
+          <p>
+            <span v-if="removeImageFromPost()"><i class="fa-solid fa-circle-minus control-icons" @click="removeImage"></i> Supprimer l'image du post</span>
+            <span v-else><i class="fa-solid fa-circle-xmark control-icons" @click="cancelRemoveImage"></i> Annuler la suppression d'image</span>
+          </p>
+          <input type="file" class="ring-cross ring-cross--change-img" accept="image/*" ref="image" @change="uploadNewFile" hidden/>
+        </div>
       </div>
     </div>
     <div class="card__post__like">
@@ -31,13 +36,13 @@
       <span class="notLiked" v-else><i @click="dislike()" class="fa-regular fa-thumbs-down"></i></span>
        {{ content.dislikes }}</p>
     </div>
-    <div class="control" v-if="content.userId == user.userId || user.isAdmin">
+    <div class="control" v-if="(content.userId == user.userId || user.isAdmin) && this.controls">
       <ButtonView @click="updatePostState" buttonText="Modifier" v-if="!this.updatingState"/>
       <div class="control--changes" v-else>
         <ButtonView @click="validateUpdate()" buttonText="Confirmer"  />
-        <ButtonView @click="cancelUpdateState" buttonText="Annuler" />
+        <ButtonView @click="cancelUpdateState()" buttonText="Annuler" />
       </div>
-      <ButtonView @click="deletePost" buttonText="Supprimer" />
+      <ButtonView v-if="!this.updatingState" @click="deletePost" buttonText="Supprimer" />
     </div>
   </article>
 </template>
@@ -62,6 +67,7 @@ export default {
       previewChangedImg: null,
       newText: '',
       removeImg: false,
+      controls: false,
     }
   },
   props: {
@@ -79,8 +85,69 @@ export default {
     ...mapState(['user', 'posts']),
   },
   methods: {
+    showControls() {
+      this.controls = true
+    },
+    plusButtonShow() {
+      if (this.content.image && this.changedImg) {
+        return true
+      } else {
+        return true
+      }
+    },
+    //(content.image == null || this.changedImg == '') || (content.image && this.removeImg && this.changedImg)
+    addAnImage() {
+      if (!this.changedImg) {
+        if(this.removeImg) {
+          return true
+        } else {
+          if (!this.content.image) {
+            return true
+          }
+        }
+      } else {
+        return false
+      }
+    }, // (this.changedImg == '' && content.image == null && this.removeImg) || (this.changedImg == '' && content.image != null && this.removeImg) || (content.image == null && this.changedImg == '' && !this.removeImg)
+    changeImage() {
+      if (!this.removeImg) {
+        if (this.changedImg) {
+          return true
+        } else {
+          if (this.content.image) {
+            return true
+          } else {
+            return false
+          }
+        }
+      } else {
+        if (this.changedImg) {
+          return true
+        } else {
+          return false
+        }
+      }
+    },
+    //((this.changedImg != '' && content.image == null) || (this.changedImg == '' && content.image != null)) && !this.removeImg
+    removeImageFromPost() {
+      if (this.content.image) {
+        if (!this.removeImg) {
+          return true
+        } else {
+          return false
+        }
+      } else {
+        if (this.changedImg) {
+          return true
+        } else {
+          return false
+        }
+      }
+    },
+    //(!this.removeImg && this.content.image != null) || (content.image == null && changedImg != '')
     activateImgInput() {
-      let changeInput = event.target.closest('div.card__post__img--change').querySelector('input.ring-cross--change-img')
+      event.stopPropagation()
+      let changeInput = event.target.closest('div.card__post--updating__container--updating__controls').querySelector('input.ring-cross--change-img')
       changeInput.click()
     },
     uploadNewFile(event) {
@@ -93,10 +160,16 @@ export default {
       this.$emit('input', this.changedImg)
     },
     updatePostState() {
+      event.stopPropagation()
       this.updatingState = true
     },
     cancelUpdateState() {
+      event.stopPropagation()
       this.updatingState = false
+      this.removeImg = false
+      this.changedImg = ''
+      this.previewChangedImg = null
+      this.controls = false
     },
     hideExistingImage() {
       if (this.changedImg !== '' || this.removeImg == true) {
@@ -106,13 +179,24 @@ export default {
       }
     },
     removeImageChanges() {
+      event.stopPropagation()
       this.changedImg = ''
       this.previewChangedImg = null
     },
     removeImage() {
+      event.stopPropagation()
       this.removeImg = true
+      this.previewChangedImg = null
+      this.changedImg = ''
+    },
+    cancelRemoveImage() {
+      event.stopPropagation()
+      this.removeImg = false
+      this.previewChangedImg = null
+      this.changedImg = ''
     },
     validateUpdate() {
+      event.stopPropagation()
       if (!this.newText && !this.changedImg && !this.removeImg) {
         this.updatingState = false
         return
@@ -166,14 +250,18 @@ export default {
         }
         this.newText = ''
         this.updatingState = false
-        this.changedImg = '',
-        this.previewChangedImg = null,
+        this.changedImg = ''
+        this.previewChangedImg = null
         this.removeImg = false
+        this.controls = false
       }
     },
     deletePost() {
       if (window.confirm("Êtes-vous sûr de vouloir effacer ce post?")) {
         this.$store.dispatch('deletePost', {id: this.content.id})
+      } else {
+        event.stopPropagation()
+        this.controls = false
       }
     },
     checkLike() {
@@ -185,6 +273,7 @@ export default {
       return this.disliked
     },
     like() {
+      event.stopPropagation()
       this.liked = true,
       this.disliked = false
       this.$store.dispatch('likePost', {
@@ -195,6 +284,7 @@ export default {
         .catch((error) => console.log(error))
     },
     dislike() {
+      event.stopPropagation()
       this.liked = false
       this.disliked = true
       this.$store.dispatch('likePost', {
@@ -205,6 +295,7 @@ export default {
         .catch((error) => console.log(error))
     },
     neutralLike() {
+      event.stopPropagation()
       this.liked = false
       this.disliked = false
       this.$store.dispatch('likePost', {
@@ -223,9 +314,19 @@ export default {
 
   &__article {
     width: 100%;
+    box-sizing: border-box;
 
     .control {
       @include row(space-evenly);
+      margin-top: 15px; 
+      height: 30px;
+
+      &--changes {
+        width: 100%;
+        @include row(space-evenly);
+        margin-top: 15px;
+        height: 30px;
+      }
 
       .button {
         width: 40%;
@@ -237,16 +338,23 @@ export default {
 
   &__post {
     width: 100%;
+    box-sizing: border-box;
+
 
     p {
+      margin-top: 0;
+      margin-bottom: 20px;
       overflow-wrap: break-word;
     }
 
     &__img {
+      display: flex;
       width: 100%;
 
       img {
+        box-sizing: border-box;
         width: 100%;
+        height: auto;
         object-fit: contain;
       }
     }
@@ -274,13 +382,18 @@ export default {
         &--updating {
           width: 100%;
           @include column;
+
+          &__img {
+            width: 100%;
+            object-fit: contain;
+          }
         }
       }
     }
 
     &__like {
       p {
-        margin: 5px 0;
+        margin: 15px 0 0 0;
       }
 
       .liked {

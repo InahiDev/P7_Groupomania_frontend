@@ -7,11 +7,11 @@
           <textarea maxlength="255" v-model="text" class="content" placeholder="Entrez votre nouveau post ici!!!"></textarea>
           <div class="card__article--newpost__img card__article--newpost__img--added" v-if="this.image != ''">
             <img :src="this.previewImage"/>
-            <i id="image-killer" class="fa-solid fa-circle-minus" @click="removeImage"></i> | Supprimer l'image
+            <i id="image-killer" class="fa-solid fa-circle-xmark" @click="removeImage"></i> Supprimer l'image
           </div>  
           <div class="card__article--newpost__img">
             <div class="card__article--newpost__img--unloaded" v-if="this.image == ''">
-              <i id="image-uploader" class="fa-solid fa-circle-plus" @click="activateUpload"></i> | Ajouter une image<input type="file" id="input__image" class="ring-cross" accept="image/*" ref="image" @change="uploadedFile" hidden/>
+              <i id="image-uploader" class="fa-solid fa-circle-plus" @click="activateUpload"></i> Ajouter une image<input type="file" id="input__image" class="ring-cross" accept="image/*" ref="image" @change="uploadedFile" hidden/>
             </div>
             <ButtonView class="button--create" buttonText="Créer un post" @click="post()"/>
           </div>
