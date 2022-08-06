@@ -11,7 +11,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .button {
   width: 100%;
   height: 100%;
@@ -25,5 +25,12 @@ export default {
   &:disabled {
     background-color: $color-secondary;
   }
+
+  @include desktop {
+    width: 180px;
+    height: 35px;
+    font-size: 1.5rem;
+  }
+
 }
 </style>

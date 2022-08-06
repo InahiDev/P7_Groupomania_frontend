@@ -21,7 +21,7 @@ $breakpoints: (
 
 //MediaQueries
 @mixin tablet {
-  @media all and (min-width: map-get($breakpoints, tablet-min)) and (max-width: map-get($breakpoints, tablet-max)) {
+  @media all and (min-width: map-get($breakpoints, tablet-min)) {
     @content;
   }
 }

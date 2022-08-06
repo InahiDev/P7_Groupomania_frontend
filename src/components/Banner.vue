@@ -36,11 +36,18 @@ export default {
   @include tablet {
     width: 90%;
   }
+  @include desktop {
+    margin: 0;
+    width: 85%;
+  }
 
   .container--banner {
     @include row(space-between, center);
     box-sizing: border-box;
     padding: 0px 20px;
+    @include desktop {
+      margin: 0;
+    }
 
     .button--unlog {
       width: 30%;
@@ -48,9 +55,15 @@ export default {
       border-radius: 10px / 50%;
       @include tablet {
         width: 20%;
+        font-size: 1.2rem;
+      }
+      @include desktop {
+        width: 15%;
+        height: 35px;
+        font-size: 1.3rem;
       }
     }
-    }
+  }
 
   h1 {
     order: 2;
@@ -60,17 +73,11 @@ export default {
     @include tablet {
       font-size: 2rem;
     }
+    @include desktop {
+      font-size: 2.3rem;
+      margin: 0;
+    }
   }
-
-  @include desktop {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    box-sizing: border-box;
-    padding: 0 50px;
-  } 
 }
 
 </style>

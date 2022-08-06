@@ -1,8 +1,7 @@
 <template>
   <nav>
-        <router-link class="link" to="/home"><i class="fa-solid fa-house"></i> Page d'accueil</router-link> |
-        <router-link class="link" to="/user"><i class="fa-solid fa-circle-user"></i> Profil Utilisateur</router-link>
-
+    <router-link class="link" to="/home"><i class="fa-solid fa-house"></i> Page d'accueil</router-link> |
+    <router-link class="link" to="/user"><i class="fa-solid fa-circle-user"></i> Profil Utilisateur</router-link>
   </nav>
   <router-view/>
 </template>
@@ -22,8 +21,16 @@ nav {
   @include tablet {
     width: 50%;
     position: absolute;
-    top: 30px;
+    top: 5%;
     left: 22%;
+    font-size: 1.2rem;
+  }
+  @include desktop {
+    width: 50%;
+    position: absolute;
+    top: 90px;
+    left: 28%;
+    font-size: 1.3rem;
   }
   
   a {

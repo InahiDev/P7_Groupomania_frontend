@@ -1,8 +1,8 @@
 <template>
   <BannerView />
   <main>
-    <div>
-      <h1>Erreur 404 - La page que vous cherchez n'existe pas!</h1>
+    <div class="card">
+      <h2>Erreur 404 - La page que vous cherchez n'existe pas!</h2>
     </div>
   </main>
 </template>
@@ -20,7 +20,7 @@ export default {
     if (!user) {
       this.$store.state.user =  {
         userId: '',
-      token: ''
+        token: ''
       }
     } else {
       this.$store.state.user = JSON.parse(user)

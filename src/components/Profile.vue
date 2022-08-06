@@ -53,6 +53,17 @@ export default {
       width: 50%;
     }
   }
+
+  @include desktop {
+    h3 {
+      font-size: 2rem;
+    }
+    .button--delete {
+      width: 220px;
+      height: 40px;
+      font-size: 1.8rem;
+    }
+  }
 }
 
 </style>

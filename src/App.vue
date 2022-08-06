@@ -39,5 +39,10 @@ body {
   @include tablet {
     width: 70%
   }
+  
+  @include desktop {
+    width: 50%;
+    margin: 3% auto;
+  }
 }
 </style>

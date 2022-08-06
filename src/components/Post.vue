@@ -316,6 +316,8 @@ export default {
 
   &__article {
     width: 100%;
+    margin: none;
+    @include column;
     box-sizing: border-box;
 
     .control {
@@ -335,6 +337,24 @@ export default {
         font-size: 1rem;
         border-radius: 13px / 50%;
       }
+
+      @include tablet {
+        width: 70%;
+      }
+
+      @include desktop {
+        width: 50%;
+
+        .button {
+          width: 180px;
+          height: 35px;
+          font-size: 1.5rem;
+        }
+      }
+    }
+
+    @include desktop {
+      font-size: 1.5rem;
     }
   }
 
@@ -347,6 +367,9 @@ export default {
       margin-top: 0;
       margin-bottom: 20px;
       overflow-wrap: break-word;
+      @include desktop {
+        font-size: 1.8rem;
+      }
     }
 
     &__img {
@@ -365,25 +388,39 @@ export default {
       width: 100%;
 
       &__content {
-          width: 100%;
-          height: 100px;
-          resize: none;
-          box-sizing: border-box;
-          padding: 10px;
-          text-align: center;
-          border-radius: 5px;
-
-          &::placeholder {
-            text-justify: center;
+        width: 100%;
+        height: 100px;
+        resize: none;
+        box-sizing: border-box;
+        padding: 10px;
+        text-align: center;
+        border-radius: 5px;
+        &::placeholder {
+          text-justify: center;
+          @include desktop {
+            font-size: 1.5rem;
           }
+        }
       }
 
       &__container {
         width: 100%;
 
+        @include desktop {
+          height: auto;
+        }
+
         &--updating {
           width: 100%;
           @include column;
+
+          &__controls {
+            @include desktop {
+              p {
+                font-size: 2rem;
+              }
+            }
+          }
 
           &__img {
             width: 100%;
@@ -412,6 +449,17 @@ export default {
         &--not {
           color: black;
         }
+      }
+      @include desktop {
+        p {
+          font-size: 2rem;
+
+          i {
+            font-size: 2rem;
+          }
+        }
+
+
       }
     }
   }

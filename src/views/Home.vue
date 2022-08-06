@@ -100,8 +100,6 @@ main {
     width: 100%;
 
     .card__article {
-
-
       &--newpost {
         
         textarea.content {
@@ -116,11 +114,18 @@ main {
           &::placeholder {
             text-justify: center;
           }
+
+          @include desktop {
+            font-size: 1.5rem;
+          }
         }
 
         &__img {
           width: 100%;
           margin: 0;
+          @include desktop {
+            font-size: 1.5rem;
+          }
 
           &--added {
             img {
@@ -133,7 +138,7 @@ main {
           }
 
           &--unloaded {
-            margin: 5px 0;            
+            margin: 5px 0;          
           }
 
           .button--create {
@@ -144,6 +149,10 @@ main {
             @include tablet {
               width: 40%;
             }
+            @include desktop {
+              width: 180px;
+              font-size: 1.5rem;
+            }
           }
         }
 
@@ -151,9 +160,4 @@ main {
     }
   }
 }
-.section__post {
-  width: 100%;
-
-}
-
 </style>

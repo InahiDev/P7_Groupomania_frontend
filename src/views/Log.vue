@@ -2,8 +2,8 @@
   <BannerView class="banner--log" />
   <div class="container container--log">
     <div class="card card--log">
-      <h1 v-if="mode == 'login'" class="card--log__title">Connexion</h1>
-      <h1 v-else class="card--log__title">Inscription</h1>
+      <h2 v-if="mode == 'login'" class="card--log__title">Connexion</h2>
+      <h2 v-else class="card--log__title">Inscription</h2>
       <p v-if="mode == 'login'" class="card--log__subtitle">Vous ne possédez pas encore de compte ?<br/><span class="card--log__action" @click="switchToCreate()">Créer un compte</span></p>
       <p v-else class="card--log__subtitle">Vous êtes déjà inscrit ?<br/><span class="card--log__action" @click="switchToLogin()">S'identifier</span></p>
       <div class="log-form">
@@ -105,33 +105,39 @@ export default {
   margin-top: 50px;
 
   @include tablet {
+    margin-top: 30px;
+  }
+  @include desktop {
     margin-top: 100px;
+    margin-bottom: 100px;
   }
 
   h1 {
     margin: 0;
+    @include desktop {
+      font-size: 3rem;
+    }
   }
 }
 
 .container--log {
-  height: 83vh;
   @include column;
 }
 
 .card--log {
-  height: 70%;
   @include column(space-around);
-
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   &__title {
-    margin: 0;
+    margin: 0 0 20px 0;
     text-shadow: 2px 2px 10px $color-tertiary;
   }
-
   &__subtitle {
     margin: 0;
     font-size: 1.4rem;
   }
-
   &__action {
     display: block;
     margin: 10px 0;
@@ -139,33 +145,44 @@ export default {
     text-decoration: underline;
     color: $color-primary;
   }
-
   &__button {
     height: 30px;
     margin-top: 5px;
   }
-
   @include tablet {
-    height: auto;
-
     &__title {
       font-size: 3rem;
     }
-
     &__subtitle {
       font-size: 2rem;
     }
-
     &__action {
       font-size: 1.9rem 
     }
-
     &__button {
       height: 50px;
       margin-top: 13px;
     }
   }
+  @include desktop {
 
+    &__title {
+      font-size: 2rem;
+    }
+    &__subtitle {
+      font-size: 1.6rem;
+    }
+    &__action {
+      font-size: 1.5rem;
+    }
+    &__button {
+      width: 50%;
+      height: 40px; 
+      .button--form {
+        font-size: 1.7rem;
+      }
+    }
+  }
 }
 
 .log-form {
@@ -175,6 +192,7 @@ export default {
   form {
     height: 85px;
     width: 100%;
+    margin-bottom: 20px;
     @include column(space-between, center)
   }
 
@@ -202,6 +220,18 @@ export default {
       font-size: 1.5rem;
     }
   }
+  @include desktop {
+    form {
+      height: 130px;
+      margin-bottom: 20px
+    }
+    &__input {
+      width: 70%;
+      height: 50px;
+      font-size: 1.3rem;
+      padding: 0 25px;
+    }
+  }
 }
 
 .errorMsg {
@@ -211,6 +241,11 @@ export default {
   @include tablet {
     font-size: 1.5rem;
   }
+
+  @include desktop {
+    font-size: 1.5rem;
+  }
+
 }
 
 </style>

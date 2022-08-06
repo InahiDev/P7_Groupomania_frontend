@@ -13,10 +13,18 @@ export default {
 <style lang="scss">
 .container--logo {
   width: 80px;
+  position: relative;
+  top: 5px;
 
   img {
     width: 100%;
     object-fit: contain;
+  }
+  @include tablet {
+    width: 120px;
+  }
+  @include desktop {
+    width: 200px;
   }
 }
 </style>
