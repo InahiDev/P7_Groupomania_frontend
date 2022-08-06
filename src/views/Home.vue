@@ -148,6 +148,7 @@ main {
 
             @include tablet {
               width: 40%;
+              height: 30px;
             }
             @include desktop {
               width: 180px;
