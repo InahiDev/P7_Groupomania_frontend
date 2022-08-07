@@ -25,8 +25,6 @@ export default createStore({
       userId: '',
       token: '',
       email: '',
-      alias: '',
-      avatar: '',
     },
     posts: undefined,
   },
@@ -50,7 +48,6 @@ export default createStore({
         userId: '',
         token: '',
         email: '',
-        alias: ''
       }
     },
     GET_POSTS(state, dataArray) {
@@ -113,6 +110,22 @@ export default createStore({
       commit('SET_STATUS', '')
       commit('UNLOG')
     },
+    //relog({commit}, userLogInfos) {
+    //  commit('SET_STATUS', 'loading')
+    //  return new Promise((resolve, reject) => {
+    //    instance.post('/auth/relog', userLogInfos)
+    //      .then(response => {
+    //        commit('SET_STATUS', 'logedIn')
+    //        commit('LOG', response.data.data)
+    //        commit('REGISTER_EMAIL', response.data.data.email)
+    //        resolve(response)
+    //      })
+    //      .catch(error => {
+    //        commit ('SET_STATUS', 'error_user_path--login')
+    //        reject(error)
+    //      })
+    //  })
+    //},
     getPosts: ({commit}) => {
       return new Promise((resolve, reject) => {
         instance.get('/post')
