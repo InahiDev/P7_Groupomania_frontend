@@ -1,7 +1,5 @@
 import { createStore } from 'vuex'
 
-
-
 const axios = require('axios')
 const instance = axios.create({
   baseURL: 'http://localhost:3000/api'
@@ -14,17 +12,25 @@ if (!user) {
     token: ''
   }
 } else {
-  user = JSON.parse(user)
-  instance.defaults.headers.common['Authorization'] = `Bearer ${user.token}`
+  try {
+    user = JSON.parse(user)
+    instance.defaults.headers.common['Authorization'] = `Bearer ${user.token}`
+  } catch(exception) {
+    user = {
+      userId: '',
+      token: ''
+    }
+  }
 }
 
 export default createStore({
   state: {
     status: '',
     user: {
-      userId: '',
-      token: '',
+      userId: user.userId,
+      token: user.token,
       email: '',
+      isAdmin: false,
     },
     posts: undefined,
   },
@@ -40,7 +46,7 @@ export default createStore({
     LOG(state, user) {
       state.user = user
       instance.defaults.headers.common['Authorization'] = `Bearer ${user.token}`
-      localStorage.setItem('user', JSON.stringify({user: user.userId, token: user.token}))
+      localStorage.setItem('user', JSON.stringify({userId: user.userId, token: user.token}))
     },
     UNLOG(state) {
       localStorage.removeItem('user')
@@ -54,7 +60,6 @@ export default createStore({
       state.posts = dataArray
     },
     UPDATE_POST(state, updatedPost) {
-      console.log("étape n°4 UPDATE_POST")
       for (let post of state.posts) {
         if (post.id == updatedPost.id) {
           let postIdx = state.posts.indexOf(post)
@@ -64,7 +69,6 @@ export default createStore({
       }
     },
     CREATE_POST(state, createdPost) {
-      console.log('étape n°3 CREATE_POST')
       state.posts.unshift(createdPost)
     },
     DELETE_POST(state, deletedPost) {
@@ -110,22 +114,23 @@ export default createStore({
       commit('SET_STATUS', '')
       commit('UNLOG')
     },
-    //relog({commit}, userLogInfos) {
-    //  commit('SET_STATUS', 'loading')
-    //  return new Promise((resolve, reject) => {
-    //    instance.post('/auth/relog', userLogInfos)
-    //      .then(response => {
-    //        commit('SET_STATUS', 'logedIn')
-    //        commit('LOG', response.data.data)
-    //        commit('REGISTER_EMAIL', response.data.data.email)
-    //        resolve(response)
-    //      })
-    //      .catch(error => {
-    //        commit ('SET_STATUS', 'error_user_path--login')
-    //        reject(error)
-    //      })
-    //  })
-    //},
+    relog({commit}, userLogInfos) {
+      instance.defaults.headers.common['Authorization'] = `Bearer ${userLogInfos.token}`
+      return new Promise((resolve, reject) => {
+        instance.post('/auth/relog', userLogInfos)
+          .then(response => {
+            commit('SET_STATUS', 'logedIn')
+            commit('REGISTER_EMAIL', response.data.data.email)
+            commit('LOG', response.data.data)
+            resolve(response)
+          })
+          .catch(error => {
+            commit ('SET_STATUS', 'error_user_path--login')
+            localStorage.removeItem('user')
+            reject(error)
+          })
+      })
+    },
     getPosts: ({commit}) => {
       return new Promise((resolve, reject) => {
         instance.get('/post')
@@ -150,7 +155,6 @@ export default createStore({
       return new Promise((resolve, reject) => {
         instance.get(`/post/${post.id}`)
           .then((response) => {
-            console.log("étape n°3 => getOnePost")
             commit('UPDATE_POST', response.data.post)
             resolve(response)
           })
@@ -175,7 +179,6 @@ export default createStore({
         return new Promise((resolve, reject) => {
           instance.post('/post', postInfos)
             .then((response) => {
-              console.log('étape n°2 createPost')
               commit('CREATE_POST', response.data.data)
               resolve(response)
             })
@@ -188,7 +191,6 @@ export default createStore({
         return new Promise((resolve, reject) => {
           instance.post('/post', data)
             .then((response) => {
-              console.log('étape n°2 createPost')
               commit('CREATE_POST', response.data.data)
               resolve(response)
             })
@@ -204,7 +206,6 @@ export default createStore({
         return new Promise((resolve, reject) => {
           instance.put(`/post/${postUpdateInfos.id}`, updateTextOnImgReq)
             .then(response => {
-              console.log("étape 2 => updatePostWithImage")
               dispatch('getOnePost', postUpdateInfos)
               resolve(response)
             })
@@ -218,7 +219,6 @@ export default createStore({
         return new Promise((resolve, reject) => {
           instance.put(`/post/${postUpdateInfos.id}`, updateImgDeletionReq)
             .then(response => {
-              console.log("étape 2 => updatePostWithImage")
               dispatch('getOnePost', postUpdateInfos)
               resolve(response)
             })
@@ -229,7 +229,6 @@ export default createStore({
         data.append('post', `{"text": "${postUpdateInfos.text}"}`)
         data.append('image', postUpdateInfos.image, postUpdateInfos.image.name)
         return new Promise((resolve, reject) => {
-          console.log("étape 2 => updatePostWithImage")
           instance.put(`/post/${postUpdateInfos.id}`, data)
             .then(response => {
               dispatch('getOnePost', postUpdateInfos)
@@ -242,7 +241,6 @@ export default createStore({
     updatePostWithoutImage({dispatch}, postUpdateInfos) {
       if (!postUpdateInfos.image) {
         return new Promise((resolve, reject) => {
-          console.log("étape 2 => updatePostWithoutImage")
           instance.put(`/post/${postUpdateInfos.id}`, {
             text: postUpdateInfos.text,
             image: ""
@@ -258,7 +256,6 @@ export default createStore({
         data.append('post', `{"text": "${postUpdateInfos.text}"}`)
         data.append('image', postUpdateInfos.image, postUpdateInfos.image.name)
         return new Promise((resolve, reject) => {
-          console.log("étape 2 => updatePostWithoutImage")
           instance.put(`/post/${postUpdateInfos.id}`, data)
             .then(response => {
               dispatch('getOnePost', postUpdateInfos)

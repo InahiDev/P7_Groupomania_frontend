@@ -15,6 +15,12 @@ export default {
   components: {
     BannerView,
     ProfileView
+  },
+  mounted() {
+    if (this.$store.state.user.userId == '' || this.$store.state.user.token == '') {
+      this.$router.push('/')
+      return
+    }
   }
 }
 </script>

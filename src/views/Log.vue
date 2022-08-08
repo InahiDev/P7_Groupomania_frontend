@@ -84,18 +84,57 @@ export default {
     }
   },
   mounted() {
-    let user = localStorage.getItem('user')
-    if (!user) {
-      this.$store.state.user =  {
-        userId: '',
-      token: ''
-      }
-    } else {
-      this.$store.state.user = JSON.parse(user)
-    }
     if (this.$store.state.user.userId != '') {
       this.$router.push('home')
+      return
     }
+
+
+    //if (this.$store.state.status != 'logedIn') {
+    //  let user = localStorage.getItem('user')
+    //  if (!user) {
+    //    user =  {
+    //      userId: '',
+    //      token: '',
+    //      isAdmin: false,
+    //      email: ''
+    //    }
+    //    this.$store.state.user = user
+    //    this.$store.state.status = ''
+    //  } else {
+    //    try {
+    //      let userRelog = JSON.parse(user)
+    //      this.$store.dispatch('relog', userRelog)
+    //        .then(this.$router.push('home'))
+    //    } catch(exception) {
+    //      user = {
+    //        userId: '',
+    //        token: '',
+    //        isAdmin: false,
+    //        email: ''
+    //      }
+    //      this.$store.state.user = user
+    //      this.$store.state.status = ''
+    //    }
+    //  }
+    //} else {
+    //  this.$router.push('home')
+    //}
+
+
+
+    //let user = localStorage.getItem('user')
+    //if (!user) {
+    //  this.$store.state.user =  {
+    //    userId: '',
+    //  token: ''
+    //  }
+    //} else {
+    //  this.$store.state.user = JSON.parse(user)
+    //}
+    //if (this.$store.state.user.userId != '') {
+    //  this.$router.push('home')
+    //}
   }
 }
 </script>

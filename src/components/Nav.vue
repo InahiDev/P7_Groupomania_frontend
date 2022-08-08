@@ -21,7 +21,7 @@ nav {
   @include tablet {
     width: 50%;
     position: absolute;
-    top: 5%;
+    top: 50px;
     left: 22%;
     font-size: 1.2rem;
   }

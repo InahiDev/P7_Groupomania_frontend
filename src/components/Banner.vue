@@ -50,7 +50,7 @@ export default {
     }
 
     .button--unlog {
-      width: 30%;
+      width: 33%;
       font-size: 0.8rem;
       border-radius: 10px / 50%;
       @include tablet {

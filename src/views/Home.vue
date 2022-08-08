@@ -40,11 +40,29 @@ export default {
     }
   },
   mounted() {
-    if (this.$store.state.user.userId == '' || this.$store.state.user.token == '') {
+    if (this.$store.state.user.userId == '') {
       this.$router.push('/')
       return
     }
     this.$store.dispatch('getPosts')
+    //if (this.$store.state.user.email == '') {
+    //  let user = JSON.parse(localStorage.getItem('user'))
+    //  this.$store.dispatch('relog', user)
+    //    .catch(this.$router.push('/'))
+    //}
+
+    //if (this.$store.state.status != 'logedIn') {
+    //  this.$router.push('/')
+    //  return
+    //}
+    //this.$store.dispatch('getPosts')
+    
+    
+    //if (this.$store.state.status != '' || this.$store.state.user.token == '') {
+    //  this.$router.push('/')
+    //  return
+    //}
+    //this.$store.dispatch('getPosts')
   },
   methods: {
     updateLikesCount() {

@@ -322,6 +322,7 @@ export default {
 
     .control {
       @include row(space-evenly);
+      width: 100%;
       margin-top: 15px; 
       height: 30px;
 
@@ -395,6 +396,9 @@ export default {
         padding: 10px;
         text-align: center;
         border-radius: 5px;
+        @include desktop {
+          font-size: 1.5rem;
+        }
         &::placeholder {
           text-justify: center;
           @include desktop {
