@@ -91,7 +91,11 @@ export default {
     },
     plusButtonShow() {
       if (this.content.image && this.changedImg) {
-        return true
+        if (this.removeImg) {
+          return true
+        } else {
+          return false
+        }
       } else {
         return true
       }
