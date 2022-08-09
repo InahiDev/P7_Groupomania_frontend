@@ -50,13 +50,11 @@
 <script>
 import { mapState } from 'vuex'
 import ButtonView from './Button.vue'
-//import UserPersonnal from './User.vue'
 
 export default {
   name: "PostView",
   components: {
     ButtonView,
-    //UserPersonnal
   },
   data() {
     return {
