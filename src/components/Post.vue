@@ -344,7 +344,8 @@ export default {
       }
 
       @include desktop {
-        width: 50%;
+        width: 70%;
+        margin-top: 0;
 
         .button {
           width: 180px;
@@ -457,6 +458,7 @@ export default {
       @include desktop {
         p {
           font-size: 2rem;
+          margin-bottom: 15px;
 
           i {
             font-size: 2rem;
