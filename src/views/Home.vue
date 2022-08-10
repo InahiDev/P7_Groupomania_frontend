@@ -68,7 +68,6 @@ export default {
     },
     post() {
       if (this.text != '') {
-        console.log('étape n°1 post')
         this.$store.dispatch('createPost', {text: this.text, image: this.image})
           .then(this.text = "", this.image = "")
           .then((response) => console.log(response))

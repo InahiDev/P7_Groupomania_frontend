@@ -141,39 +141,6 @@ export default createStore({
           .catch(error => reject(error))
       })
     },
-    //async getOnePost({commit}, post) {
-    //    let updatedPost = await instance.get(`/post/${post.id}`)
-    //    commit('UPDATE_POST', updatedPost.data.post)
-    //},
-
-    //      let updatedPost = await instance.get(`/post/${post.id}`)
-    //      console.log(updatedPost)
-    //
-    //
-    //
-    getOnePost: ({commit}, post) => {
-      return new Promise((resolve, reject) => {
-        instance.get(`/post/${post.id}`)
-          .then((response) => {
-            commit('UPDATE_POST', response.data.post)
-            resolve(response)
-          })
-          .catch((error) => reject(error))
-      })
-    },
-    //async createPost({commit}, postInfos) {
-    //  if (postInfos.image == '') {
-    //    try {
-    //      let createdPost = await instance.post('/post', postInfos)
-    //      commit('CREATE_POST', createdPost.data.data)
-    //    } catch(error) {
-    //      console.log(error)
-    //    }
-    //
-    //
-    //  }
-    //},
-    
     createPost: ({commit}, postInfos) => {
       if (postInfos.image == '') {
         return new Promise((resolve, reject) => {
