@@ -92,7 +92,7 @@ export default {
         if (this.removeImg) {
           return true
         } else {
-          return false
+          return true
         }
       } else {
         return true
