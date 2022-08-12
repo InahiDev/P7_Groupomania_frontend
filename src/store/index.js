@@ -141,6 +141,16 @@ export default createStore({
           .catch(error => reject(error))
       })
     },
+    getOnePost: ({commit}, postToGet) => {
+      return new Promise((resolve, reject) => {
+        instance.get(`/post/${postToGet.id}`)
+          .then((response) => {
+            commit('UPDATE_POST', response.data.post)
+            resolve(response)
+          })
+          .catch(error => reject(error))
+      })
+    },
     createPost: ({commit}, postInfos) => {
       if (postInfos.image == '') {
         return new Promise((resolve, reject) => {
