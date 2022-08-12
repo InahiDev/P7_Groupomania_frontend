@@ -13,7 +13,7 @@
         <img class="card__post--updating__container--updating__img" v-else :src="this.previewChangedImg" />
         <div class="card__post--updating__container--updating__controls">
           <p>
-            <i class="fa-solid fa-circle-plus control-icons" @click="activateImgInput" v-if="plusButtonShow()"></i>
+            <i class="fa-solid fa-circle-plus control-icons" @click="activateImgInput"></i>
             <span v-if="addAnImage()"> Ajouter une image</span>
             <span v-if="changeImage()"> Changer d'image</span>
           </p>
@@ -87,18 +87,6 @@ export default {
     showControls() {
       this.controls = true
     },
-    plusButtonShow() {
-      if (this.content.image && this.changedImg) {
-        if (this.removeImg) {
-          return true
-        } else {
-          return true
-        }
-      } else {
-        return true
-      }
-    },
-    //(content.image == null || this.changedImg == '') || (content.image && this.removeImg && this.changedImg)
     addAnImage() {
       if (!this.changedImg) {
         if(this.removeImg) {
